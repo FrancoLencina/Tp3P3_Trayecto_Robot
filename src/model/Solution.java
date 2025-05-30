@@ -6,7 +6,7 @@ import java.util.List;
 public class Solution {
 	private List<int[]> _journey;
 	private int _charge;	
-	
+
 	public Solution() {
 		_journey = new ArrayList<>();
 		setCharge(0);
@@ -30,6 +30,10 @@ public class Solution {
 
 	public void setCharge(int _charge) {
 		this._charge = _charge;
+	}
+	
+	public List<int[]> get_journey() {
+		return _journey;
 	}
 	
 	public Solution clone() {

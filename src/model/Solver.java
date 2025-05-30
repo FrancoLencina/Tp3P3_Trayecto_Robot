@@ -24,7 +24,7 @@ public class Solver {
 		_actual = new Solution();
 		_actual.addStep(0, 0, _matrix[0][0]);
 		generateFrom(0, 0, _actual);
-		System.out.print("Soluciones encontradas:" + solutionsSize());
+		System.out.println("Soluciones encontradas:" + solutionsSize());
 	}
 	
 	public void generateFrom(int row, int col, Solution sol){
@@ -35,6 +35,9 @@ public class Solver {
 		if(sol.getCharge() == 0 && _remainingSteps == 0) {
 			_solutions.add(sol.clone());
 			System.out.println("\nSolución encontrada!");
+			for (int[] c : _solutions.get(solutionsSize()-1).get_journey()) {
+				System.out.print("{" + c[0] +", "+ c[1] + "} ");
+			}
 			return;
 		}
 		
@@ -43,38 +46,26 @@ public class Solver {
 			
 			if (row+1 < _m ) {
 				
-				sol.addStep(row + 1, col, _matrix[row + 1][col]);
+				sol.addStep(col, row + 1, _matrix[row + 1][col]);
 				_remainingSteps-=1;
 				System.out.print(" v\n");
 				generateFrom(row + 1, col, sol);
-				sol.removeLastStep(row+1, col, _matrix[row + 1][col]);
+				sol.removeLastStep(col, row+1, _matrix[row + 1][col]);
 				_remainingSteps+=1;
 				System.out.print(" ^");
 			}
 			
 			if (col+1 < _n) {
 				
-				sol.addStep(row, col + 1, _matrix[row][col + 1]);
+				sol.addStep(col + 1, row, _matrix[row][col + 1]);
 				_remainingSteps-=1;
 				System.out.print(" ->\n");
 				generateFrom(row, col + 1, sol);
-				sol.removeLastStep(row, col + 1, _matrix[row][col + 1]);
+				sol.removeLastStep(col + 1, row, _matrix[row][col + 1]);
 				_remainingSteps+=1;
 				System.out.print(" <-");
 			}
 		}
-		
-//        if (row + 1 < _n) {
-//            sol.addStep(row + 1, col, _matrix[row + 1][col]);
-//            generateFrom(row + 1, col, sol);
-//            sol.removeLastStep(row + 1, col, _matrix[row + 1][col]);
-//        }
-//
-//        if (col + 1 < _m) {
-//            sol.addStep(row, col + 1, _matrix[row][col + 1]);
-//            generateFrom(row, col + 1, sol);
-//            sol.removeLastStep(row, col + 1, _matrix[row][col + 1]);
-//        }
 	}
 	
 	public int solutionsSize(){
