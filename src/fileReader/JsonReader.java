@@ -26,4 +26,11 @@ public class JsonReader {
 	public int[][] getMatrix(){
 		return this.matrix;
 	}
+	
+	public int[] getMatrixAttributes(){
+		int[] attributes = new int[2];
+		attributes[0] = matrix.length;
+		attributes[1] = matrix[0].length;
+		return attributes;
+	}
 }
