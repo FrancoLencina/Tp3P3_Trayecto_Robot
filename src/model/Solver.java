@@ -50,7 +50,7 @@ public class Solver {
 				_remainingSteps-=1;
 				System.out.print(" v\n");
 				generateFrom(row + 1, col, sol);
-				sol.removeLastStep(col, row+1, _matrix[row + 1][col]);
+				sol.removeLastStep(_matrix[row + 1][col]);
 				_remainingSteps+=1;
 				System.out.print(" ^");
 			}
@@ -61,7 +61,7 @@ public class Solver {
 				_remainingSteps-=1;
 				System.out.print(" ->\n");
 				generateFrom(row, col + 1, sol);
-				sol.removeLastStep(col + 1, row, _matrix[row][col + 1]);
+				sol.removeLastStep(_matrix[row][col + 1]);
 				_remainingSteps+=1;
 				System.out.print(" <-");
 			}
@@ -70,5 +70,9 @@ public class Solver {
 	
 	public int solutionsSize(){
 		return _solutions.size();
+	}
+
+	public List<Solution> get_solutions() {
+		return _solutions;
 	}
 }

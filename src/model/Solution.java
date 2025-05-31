@@ -17,7 +17,7 @@ public class Solution {
 		setCharge(getCharge() + charge);
 	}
 	
-	public void removeLastStep(int x, int y, int charge) {
+	public void removeLastStep(int charge) {
 	    if (!_journey.isEmpty()) {
 	    	_journey.remove(_journey.size() - 1);
             setCharge(getCharge() - charge);

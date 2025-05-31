@@ -1,15 +1,21 @@
 package view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JTextField;
+
+import model.Solution;
+import model.Solver;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 
@@ -17,6 +23,10 @@ public class View {
 
 	private JFrame frame;
 	private JTextField textField;
+	int[][] matrix = {{1, -1, -1, -1}, {-1, 1, 1, -1}, {1, 1, 1, -1}};
+	//int[][] matrix = {{1, -1, 1, 1}, {-1, -1, -1, -1}, {1, 1, -1, -1}, {-1, 1, 1, -1}, {-1, -1, -1, 1}};
+	Solver solver = new Solver(matrix);
+	JLabel[][] labels = new JLabel[matrix.length][matrix[0].length];
 
 	/**
 	 * Launch the application.
@@ -87,6 +97,20 @@ public class View {
 		JButton btnNewButton_1 = new JButton("Generar Soluciones");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				solver.solve();
+				List<Solution> solutions = solver.get_solutions();
+				for (int[] c : solutions.get(0).get_journey()) {
+				    int row = c[1];
+				    int col = c[0];
+				    if (row < matrix.length && col < matrix[0].length) {
+				        labels[row][col].setOpaque(true);
+				        labels[row][col].setBackground(Color.GREEN);
+				    } else {
+				        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
+				    }
+					
+				}
 			}
 		});
 		btnNewButton_1.setBounds(50, 119, 125, 56);
@@ -95,6 +119,18 @@ public class View {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 11, 454, 419);
 		frame.getContentPane().add(panel_1);
-		panel_1.setLayout(new GridLayout(1, 0, 0, 0));
+		panel_1.setLayout(new GridLayout(matrix.length, matrix[0].length, 0, 0));
+		
+		for (int i = 0; i< matrix.length; i++) {
+			for (int j = 0; j< matrix[0].length; j++) {
+				JLabel text = new JLabel("" + matrix[i][j]);
+				labels[i][j] = text;
+				text.setBackground(Color.WHITE);
+				text.setForeground(Color.BLACK);
+				text.setFont(new Font("Arial", 0, 25));
+				text.setHorizontalAlignment(JTextField.CENTER);
+				panel_1.add(text);
+			}
+		}
 	}
 }
