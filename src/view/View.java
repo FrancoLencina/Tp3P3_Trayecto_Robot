@@ -110,16 +110,7 @@ public class View {
 			resetColors();
 			int index = comboBox.getSelectedIndex();
 			List<Solution> solutions = bfController.getSolutions();
-			for (int[] c : solutions.get(index).get_journey()) {
-			    int row = c[1];
-			    int col = c[0];
-			    if (row < labels.length && col < labels[0].length) {
-			        labels[row][col].setOpaque(true);
-			        labels[row][col].setBackground(Color.GREEN);
-			    } else {
-			        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
-			    }
-			}
+			showSolutionPath(solutions, index);
 		});
 		comboBox.setBounds(10, 265, 199, 22);
 		comboBox.setEnabled(false);
@@ -143,10 +134,14 @@ public class View {
 			comboBox.setModel(new DefaultComboBoxModel(solutions));
 			comboBox.setEnabled(true);
 			System.out.println(comboBox.isEnabled());
+			
+			resetColors();
+			showSolutionPath(bfController.getSolutions(), 0);
 		});
 		btnNewButton_1.setBounds(50, 119, 125, 56);
 		panel.add(btnNewButton_1);
 	}
+
 
 	private void setMatrixLayout(JPanel panel, int[][] readMatrix) {
 		panel.setLayout(new GridLayout(readMatrix.length, readMatrix[0].length, 3, 3));
@@ -169,6 +164,20 @@ public class View {
 			for (int j = 0; j< labels[0].length; j++) {
 				labels[i][j].setBackground(Color.WHITE);
 			}
+		}
+	}
+	
+
+	private void showSolutionPath(List<Solution> solutionList, int solutionIndex) {
+		for (int[] c : solutionList.get(solutionIndex).get_journey()) {
+		    int row = c[1];
+		    int col = c[0];
+		    if (row < labels.length && col < labels[0].length) {
+		        labels[row][col].setOpaque(true);
+		        labels[row][col].setBackground(Color.GREEN);
+		    } else {
+		        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
+		    }
 		}
 	}
 }
