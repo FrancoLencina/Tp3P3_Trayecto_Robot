@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JTextField;
 
-import controllers.BruteForceController;
+import controllers.*;
 import model.Solution;
 import model.Solver;
 
@@ -32,7 +32,8 @@ public class View {
 
 	private JFrame frame;
 	private JTextField textRoute;
-	private BruteForceController bfController = new BruteForceController();
+	private ReaderController rController = new ReaderController();
+	private BruteForceController bfController;
 	JLabel[][] labels;
 
 	/**
@@ -95,10 +96,11 @@ public class View {
 				try {
 					panel_1.removeAll();
 					String route = textRoute.getText();
-					bfController.readFile(route);
-					int[] attributes = bfController.getMatrixAttributes();
+					rController.readFile(route);
+					bfController = new BruteForceController(rController.getMatrix());
+					int[] attributes = rController.getMatrixAttributes();
 					labels= new JLabel[attributes[0]][attributes[1]];
-					setMatrixLayout(panel_1, bfController.getMatrix());
+					setMatrixLayout(panel_1, rController.getMatrix());
 					
 					
 				} catch (Exception ex) {
