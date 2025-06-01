@@ -25,6 +25,8 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.SwingConstants;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
 
 public class View {
 
@@ -71,6 +73,8 @@ public class View {
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(0, 0, 0));
+		panel_1.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
 		panel_1.setBounds(10, 11, 454, 419);
 		frame.getContentPane().add(panel_1);
 		
@@ -89,6 +93,7 @@ public class View {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					panel_1.removeAll();
 					String route = textRoute.getText();
 					bfController.readFile(route);
 					int[] attributes = bfController.getMatrixAttributes();
@@ -159,15 +164,6 @@ public class View {
 		}
 	}
 	
-	private void resetColors() {
-		for (int i = 0; i< labels.length; i++) {
-			for (int j = 0; j< labels[0].length; j++) {
-				labels[i][j].setBackground(Color.WHITE);
-			}
-		}
-	}
-	
-
 	private void showSolutionPath(List<Solution> solutionList, int solutionIndex) {
 		for (int[] c : solutionList.get(solutionIndex).get_journey()) {
 		    int row = c[1];
@@ -180,4 +176,13 @@ public class View {
 		    }
 		}
 	}
+	
+	private void resetColors() {
+		for (int i = 0; i< labels.length; i++) {
+			for (int j = 0; j< labels[0].length; j++) {
+				labels[i][j].setBackground(Color.WHITE);
+			}
+		}
+	}
+	
 }
