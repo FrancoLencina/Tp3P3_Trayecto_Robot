@@ -11,7 +11,7 @@ public class BruteForceController {
 	public BruteForceController(int[][] matrix) {
 		s = new Solver(matrix);
 	}
-	
+
 	public void solve() {
 		s.solve();
 	}

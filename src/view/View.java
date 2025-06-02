@@ -10,8 +10,6 @@ import javax.swing.JTextField;
 
 import controllers.*;
 import model.Solution;
-import model.Solver;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -22,9 +20,6 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import javax.swing.SwingConstants;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 
@@ -68,49 +63,37 @@ public class View {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(475, 11, 219, 419);
-		frame.getContentPane().add(panel);
-		panel.setLayout(null);
+		JPanel optionsPanel = new JPanel();
+		optionsPanel.setBounds(475, 11, 219, 419);
+		frame.getContentPane().add(optionsPanel);
+		optionsPanel.setLayout(null);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(0, 0, 0));
-		panel_1.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
-		panel_1.setBounds(10, 11, 454, 419);
-		frame.getContentPane().add(panel_1);
+		JPanel solutionsPanel = new JPanel();
+		solutionsPanel.setBackground(new Color(0, 0, 0));
+		solutionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
+		solutionsPanel.setBounds(10, 11, 454, 419);
+		frame.getContentPane().add(solutionsPanel);
 		
 		textRoute = new JTextField();
 		textRoute.setText("src/fileReader/exampleMatrix.json");
 		textRoute.setBounds(10, 51, 125, 28);
-		panel.add(textRoute);
+		optionsPanel.add(textRoute);
 		textRoute.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("Ingresa ruta del archivo:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel.setBounds(10, 24, 183, 29);
-		panel.add(lblNewLabel);
+		JLabel lblroute = new JLabel("Ingresa ruta del archivo:");
+		lblroute.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblroute.setBounds(10, 24, 183, 29);
+		optionsPanel.add(lblroute);
 		
-		JButton btnNewButton = new JButton("Cargar");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					panel_1.removeAll();
-					String route = textRoute.getText();
-					rController.readFile(route);
-					bfController = new BruteForceController(rController.getMatrix());
-					int[] attributes = rController.getMatrixAttributes();
-					labels= new JLabel[attributes[0]][attributes[1]];
-					setMatrixLayout(panel_1, rController.getMatrix());
-					
-					
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					JOptionPane.showMessageDialog(panel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		btnNewButton.setBounds(144, 54, 65, 23);
-		panel.add(btnNewButton);
+		JLabel lblsolutions = new JLabel("Soluciones:");
+		lblsolutions.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblsolutions.setBounds(10, 240, 106, 14);
+		lblsolutions.setVisible(false);
+		optionsPanel.add(lblsolutions);
+
+		JButton btnload = new JButton("Cargar");		
+		btnload.setBounds(144, 54, 65, 23);
+		optionsPanel.add(btnload);
 		
 		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.addItemListener(e -> {
@@ -122,16 +105,14 @@ public class View {
 		comboBox.setBounds(10, 265, 199, 22);
 		comboBox.setEnabled(false);
 		System.out.println(comboBox.isEnabled());
-		panel.add(comboBox);
+		optionsPanel.add(comboBox);
 		
-		JLabel lblNewLabel_1 = new JLabel("Soluciones:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel_1.setBounds(10, 240, 106, 14);
-		lblNewLabel_1.setVisible(false);
-		panel.add(lblNewLabel_1);
+		JButton btngenerate = new JButton("Generar Soluciones");
+		btngenerate.setEnabled(false);
+		btngenerate.setBounds(50, 119, 125, 56);
+		optionsPanel.add(btngenerate);
 		
-		JButton btnNewButton_1 = new JButton("Generar Soluciones");
-		btnNewButton_1.addActionListener(e -> {
+		btngenerate.addActionListener(e -> {
 			bfController.solve();
 			String[] solutions = new String[bfController.getAmountOfSolutions()];
 			for (int i = 0; i<solutions.length;i++) {
@@ -145,10 +126,26 @@ public class View {
 			resetColors();
 			showSolutionPath(bfController.getSolutions(), 0);
 		});
-		btnNewButton_1.setBounds(50, 119, 125, 56);
-		panel.add(btnNewButton_1);
+	
+		btnload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					solutionsPanel.removeAll();
+					String route = textRoute.getText();
+					rController.readFile(route);
+					bfController = new BruteForceController(rController.getMatrix());
+					int[] attributes = rController.getMatrixAttributes();
+					labels= new JLabel[attributes[0]][attributes[1]];
+					setMatrixLayout(solutionsPanel, rController.getMatrix());
+					btngenerate.setEnabled(true);
+					
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 	}
-
 
 	private void setMatrixLayout(JPanel panel, int[][] readMatrix) {
 		panel.setLayout(new GridLayout(readMatrix.length, readMatrix[0].length, 3, 3));
