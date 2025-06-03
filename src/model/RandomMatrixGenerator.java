@@ -1,27 +1,29 @@
 package model;
 
-import java.util.Random;
-
 public class RandomMatrixGenerator {
 
-	private Random random = new Random();
+	private Generator _random;
+	
+	public RandomMatrixGenerator(Generator generator) {
+		_random = generator;
+	}
 	
 	public int[][] generateMatrix() {
 		
 		int row, col;
-		row = random.nextInt(2, 11);
-		col = random.nextInt(2, 11);
+		row = _random.nextInt(2, 11);
+		col = _random.nextInt(2, 11);
 		
 		while((row + col -1)% 2 != 0) {
-			row = random.nextInt(2, 11);
-			col = random.nextInt(2, 11);
+			row = _random.nextInt(2, 11);
+			col = _random.nextInt(2, 11);
 		}
 		
 		int[][] matrix = new int[row][col];
 		
 		for(int r = 0; r < matrix.length; r++) {
 			for(int c = 0; c < matrix[0].length; c++) {
-				boolean positiveCharge = random.nextBoolean();
+				boolean positiveCharge = _random.nextBoolean();
 				if(positiveCharge) {
 					matrix[r][c] = 1;
 				}

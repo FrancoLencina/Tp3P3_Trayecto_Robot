@@ -11,8 +11,8 @@ public class testing {
 //		Solver solver2 = new Solver(matrix2);
 //	
 //		solver2.solve();
-		
-		RandomMatrixGenerator rmg = new RandomMatrixGenerator();
+		Generator ranGen = new RandomGenerator();
+		RandomMatrixGenerator rmg = new RandomMatrixGenerator(ranGen);
 		int [][] matrix = rmg.generateMatrix();
 		rmg.printMatrix(matrix);
 	}
