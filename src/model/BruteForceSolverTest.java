@@ -14,7 +14,7 @@ public class BruteForceSolverTest {
 	            { 1, 1, 1, -1 }
 	        };
 		
-		BruteForceSolver solver = new BruteForceSolver(matrix);
+		Solver solver = new Solver(matrix);
         solver.solve();
         
         assertEquals(3,solver.solutionsSize());

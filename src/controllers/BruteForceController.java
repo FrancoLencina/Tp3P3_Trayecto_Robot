@@ -2,14 +2,14 @@ package controllers;
 
 import java.util.List;
 import model.Solution;
-import model.Solver;
+import model.PruningSolver;
 
 public class BruteForceController {
 
-	private Solver s;
+	private PruningSolver s;
 	
 	public BruteForceController(int[][] matrix) {
-		s = new Solver(matrix);
+		s = new PruningSolver(matrix);
 	}
 
 	public void solve() {
