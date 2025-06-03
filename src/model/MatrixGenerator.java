@@ -1,24 +1,24 @@
 package model;
 
-public class RandomMatrixGenerator {
+public class MatrixGenerator {
 
 	private Generator _random;
 	private int _origin = 2;
 	private int _bound = 11;
 	
-	public RandomMatrixGenerator(Generator generator) {
+	public MatrixGenerator(Generator generator) {
 		_random = generator;
 	}
 	
 	public int[][] generateMatrix() {
 		
 		int row, col;
-		row = generateSize(_origin, _bound);
-		col = generateSize(_origin, _bound);
+		row = generateSize();
+		col = generateSize();
 		
-		while (!verifyCompatible(_origin, _bound)) {
-			row = generateSize(_origin, _bound);
-			col = generateSize(_origin, _bound);
+		while (!verifyCompatible(row, col)) {
+			row = generateSize();
+			col = generateSize();
 		}
 		
 		int[][] matrix = generateCharge(row, col);
@@ -26,11 +26,11 @@ public class RandomMatrixGenerator {
 		return matrix;
 	}
 
-	private int generateSize(int origin, int bound) {
-		return _random.nextInt(origin, bound);
+	int generateSize() {
+		return _random.nextInt(_origin, _bound);
 	}
 
-	private boolean verifyCompatible(int row, int col) {
+	boolean verifyCompatible(int row, int col) {
 		
 		if((row + col) % 2 == 1) {
 			return true;
@@ -43,17 +43,21 @@ public class RandomMatrixGenerator {
 		
 		for(int r = 0; r < matrix.length; r++) {
 			for(int c = 0; c < matrix[0].length; c++) {
-				boolean positiveCharge = _random.nextBoolean();
-				if(positiveCharge) {
-					matrix[r][c] = 1;
-				}
-				else {
-					matrix[r][c] = -1;
-				}
+				matrix[r][c] = defineCharge();
 			}
 		}
 		return matrix;
 	}
+	
+	int defineCharge() {
+		boolean positiveCharge = _random.nextBoolean();
+		if(positiveCharge) {
+			return 1;
+		}
+		
+		return -1;
+	}
+	
 	public void printMatrix(int[][] matrix) {
         for (int[] row : matrix) {
             for (int val : row) {

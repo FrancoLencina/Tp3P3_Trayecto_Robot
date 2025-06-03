@@ -24,6 +24,6 @@ public class PresetGenerator implements Generator {
 
 	@Override
 	public int nextInt(int n, int m) {
-		return _retN ? n : m;
+		return _retN ? _n : _m;
 	}
 }
