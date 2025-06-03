@@ -15,7 +15,7 @@ public class RandomGenerator implements Generator {
 	}
 
 	@Override
-	public int nextInt(int origin, int bound ) {
+	public int nextInt(int origin, int bound) {
 		return _random.nextInt(origin, bound);
 	}
 }

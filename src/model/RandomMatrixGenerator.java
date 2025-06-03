@@ -3,6 +3,8 @@ package model;
 public class RandomMatrixGenerator {
 
 	private Generator _random;
+	private int _origin = 2;
+	private int _bound = 11;
 	
 	public RandomMatrixGenerator(Generator generator) {
 		_random = generator;
@@ -11,14 +13,32 @@ public class RandomMatrixGenerator {
 	public int[][] generateMatrix() {
 		
 		int row, col;
-		row = _random.nextInt(2, 11);
-		col = _random.nextInt(2, 11);
+		row = generateSize(_origin, _bound);
+		col = generateSize(_origin, _bound);
 		
-		while((row + col -1)% 2 != 0) {
-			row = _random.nextInt(2, 11);
-			col = _random.nextInt(2, 11);
+		while (!verifyCompatible(_origin, _bound)) {
+			row = generateSize(_origin, _bound);
+			col = generateSize(_origin, _bound);
 		}
 		
+		int[][] matrix = generateCharge(row, col);
+		
+		return matrix;
+	}
+
+	private int generateSize(int origin, int bound) {
+		return _random.nextInt(origin, bound);
+	}
+
+	private boolean verifyCompatible(int row, int col) {
+		
+		if((row + col) % 2 == 1) {
+			return true;
+		}
+		return false;
+	}
+
+	private int[][] generateCharge(int row, int col) {
 		int[][] matrix = new int[row][col];
 		
 		for(int r = 0; r < matrix.length; r++) {
@@ -32,7 +52,6 @@ public class RandomMatrixGenerator {
 				}
 			}
 		}
-		
 		return matrix;
 	}
 	public void printMatrix(int[][] matrix) {
