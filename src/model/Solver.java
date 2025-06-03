@@ -75,4 +75,16 @@ public class Solver {
 	public List<Solution> get_solutions() {
 		return _solutions;
 	}
+
+	public int getMatrixWidth() {
+		return _n;
+	}
+	
+	public int getMatrixHeight() {
+		return _m;
+	}
+	
+	public int getRemainingSteps() {
+		return _remainingSteps;
+	}
 }
