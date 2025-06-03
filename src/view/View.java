@@ -1,32 +1,27 @@
 package view;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.GridLayout;
-import javax.swing.JTextField;
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.*;
+
 import controllers.*;
 import model.Solution;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
 
 public class View {
 
 	private JFrame frame;
 	private JTextField textRoute;
+	
+	private JButton btnLoad;
+	private JButton btnGenerate;
+    private JComboBox<String> comboBox;
+    private JPanel solutionsPanel;
+    private JPanel optionsPanel;
+    
 	private ReaderController rController = new ReaderController();
 	private BruteForceController bfController;
-	JLabel[][] labels;
+	private JLabel[][] labels;
 
 	/**
 	 * Launch the application.
@@ -55,93 +50,113 @@ public class View {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		setUpFrame();
+		
+		optionsPanel= createOptionsPanel();
+		solutionsPanel = createSolutionsPanel();
+		
+		frame.getContentPane().add(optionsPanel);
+        frame.getContentPane().add(solutionsPanel);
+        
+        Listeners();
+		
+	}
+
+	private JPanel createSolutionsPanel() {
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(0, 0, 0));
+		panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
+		panel.setBounds(10, 11, 454, 419);
+		
+		return panel;
+	}
+
+	private void setUpFrame() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 720, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		JPanel optionsPanel = new JPanel();
-		optionsPanel.setBounds(475, 11, 219, 419);
-		frame.getContentPane().add(optionsPanel);
-		optionsPanel.setLayout(null);
-		
-		JPanel solutionsPanel = new JPanel();
-		solutionsPanel.setBackground(new Color(0, 0, 0));
-		solutionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
-		solutionsPanel.setBounds(10, 11, 454, 419);
-		frame.getContentPane().add(solutionsPanel);
-		
-		textRoute = new JTextField();
-		textRoute.setText("src/fileReader/exampleMatrix.json");
-		textRoute.setBounds(10, 51, 125, 28);
-		optionsPanel.add(textRoute);
-		textRoute.setColumns(10);
+	}
+	
+	private JPanel createOptionsPanel() {
+		JPanel panel = new JPanel();
+		panel.setBounds(475, 11, 219, 419);
+		panel.setLayout(null);
 		
 		JLabel lblroute = new JLabel("Ingresa ruta del archivo:");
 		lblroute.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblroute.setBounds(10, 24, 183, 29);
-		optionsPanel.add(lblroute);
+		panel.add(lblroute);
 		
-		JLabel lblsolutions = new JLabel("Soluciones:");
-		lblsolutions.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblsolutions.setBounds(10, 240, 106, 14);
-		lblsolutions.setVisible(false);
-		optionsPanel.add(lblsolutions);
-
-		JButton btnload = new JButton("Cargar");		
-		btnload.setBounds(144, 54, 65, 23);
-		optionsPanel.add(btnload);
+		textRoute = new JTextField();
+		textRoute.setText("src/fileReader/exampleMatrix.json");
+		textRoute.setBounds(10, 51, 125, 28);
+		panel.add(textRoute);
+		textRoute.setColumns(10);
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
+		btnLoad = new JButton("Cargar");		
+		btnLoad.setBounds(144, 54, 65, 23);
+		panel.add(btnLoad);
+		
+		btnGenerate = new JButton("Generar Soluciones");
+		btnGenerate.setEnabled(false);
+		btnGenerate.setBounds(50, 119, 125, 56);
+		panel.add(btnGenerate);
+		
+		comboBox = new JComboBox<>();
+		comboBox.setBounds(10, 265, 199, 22);
+		comboBox.setEnabled(false);
+		//System.out.println(comboBox.isEnabled());
+		panel.add(comboBox);
+		
+		return panel;
+	}
+	
+	private void Listeners() {
+		btnLoad.addActionListener(e-> { loadMatrix(); });
+		
+		btnGenerate.addActionListener(e -> { generateSolutions(); });
+		
 		comboBox.addItemListener(e -> {
 			resetColors();
 			int index = comboBox.getSelectedIndex();
 			List<Solution> solutions = bfController.getSolutions();
 			showSolutionPath(solutions, index);
 		});
-		comboBox.setBounds(10, 265, 199, 22);
-		comboBox.setEnabled(false);
-		System.out.println(comboBox.isEnabled());
-		optionsPanel.add(comboBox);
-		
-		JButton btngenerate = new JButton("Generar Soluciones");
-		btngenerate.setEnabled(false);
-		btngenerate.setBounds(50, 119, 125, 56);
-		optionsPanel.add(btngenerate);
-		
-		btngenerate.addActionListener(e -> {
-			bfController.solve();
-			String[] solutions = new String[bfController.getAmountOfSolutions()];
-			for (int i = 0; i<solutions.length;i++) {
-				solutions[i] = "Solución " + (i+1);
-				
-			}
-			comboBox.setModel(new DefaultComboBoxModel(solutions));
-			comboBox.setEnabled(true);
-			System.out.println(comboBox.isEnabled());
+	}
+
+	private void loadMatrix() {
+		try {
+			solutionsPanel.removeAll();
+			String route = textRoute.getText();
+			rController.readFile(route);
+			bfController = new BruteForceController(rController.getMatrix());
+			int[] attributes = rController.getMatrixAttributes();
+			labels= new JLabel[attributes[0]][attributes[1]];
+			setMatrixLayout(solutionsPanel, rController.getMatrix());
+			btnGenerate.setEnabled(true);
 			
-			resetColors();
-			showSolutionPath(bfController.getSolutions(), 0);
-		});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
 	
-		btnload.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					solutionsPanel.removeAll();
-					String route = textRoute.getText();
-					rController.readFile(route);
-					bfController = new BruteForceController(rController.getMatrix());
-					int[] attributes = rController.getMatrixAttributes();
-					labels= new JLabel[attributes[0]][attributes[1]];
-					setMatrixLayout(solutionsPanel, rController.getMatrix());
-					btngenerate.setEnabled(true);
-					
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
+	}
+	
+	private void generateSolutions() {
+		bfController.solve();
+		String[] solutions = new String[bfController.getAmountOfSolutions()];
+		for (int i = 0; i<solutions.length;i++) {
+			solutions[i] = "Solución " + (i+1);
+			
+		}
+		comboBox.setModel(new DefaultComboBoxModel<>(solutions));
+		comboBox.setEnabled(true);
+		//System.out.println(comboBox.isEnabled());
+		
+		resetColors();
+		showSolutionPath(bfController.getSolutions(), 0);
+	
 	}
 
 	private void setMatrixLayout(JPanel panel, int[][] readMatrix) {
