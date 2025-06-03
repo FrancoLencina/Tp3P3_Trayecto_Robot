@@ -2,14 +2,17 @@ package view;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JTextField;
+
 import controllers.*;
 import model.Solution;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
