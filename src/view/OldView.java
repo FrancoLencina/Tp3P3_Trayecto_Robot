@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
+import javax.swing.JProgressBar;
 
 public class OldView {
 
@@ -27,6 +28,8 @@ public class OldView {
 	private ReaderController rController = new ReaderController();
 	private BruteForceController bfController;
 	JLabel[][] labels;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -57,40 +60,40 @@ public class OldView {
 	private void initialize() {
 
 		frame = new JFrame();
-		frame.setBounds(100, 100, 720, 480);
+		frame.setBounds(100, 100, 800, 470);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setBounds(475, 11, 219, 419);
+		optionsPanel.setBounds(475, 11, 300, 420);
 		frame.getContentPane().add(optionsPanel);
 		optionsPanel.setLayout(null);
 		
 		JPanel solutionsPanel = new JPanel();
 		solutionsPanel.setBackground(new Color(0, 0, 0));
 		solutionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
-		solutionsPanel.setBounds(10, 11, 454, 419);
+		solutionsPanel.setBounds(10, 11, 454, 420);
 		frame.getContentPane().add(solutionsPanel);
 		
 		textRoute = new JTextField();
 		textRoute.setText("src/fileReader/exampleMatrix.json");
-		textRoute.setBounds(10, 51, 125, 28);
+		textRoute.setBounds(10, 35, 200, 25);
 		optionsPanel.add(textRoute);
 		textRoute.setColumns(10);
 		
 		JLabel lblroute = new JLabel("Ingresa ruta del archivo:");
 		lblroute.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblroute.setBounds(10, 24, 183, 29);
+		lblroute.setBounds(10, 10, 183, 29);
 		optionsPanel.add(lblroute);
 		
 		JLabel lblsolutions = new JLabel("Soluciones:");
 		lblsolutions.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblsolutions.setBounds(10, 240, 106, 14);
+		lblsolutions.setBounds(10, 240, 106, 20);
 		lblsolutions.setVisible(false);
 		optionsPanel.add(lblsolutions);
 
 		JButton btnload = new JButton("Cargar");		
-		btnload.setBounds(144, 54, 65, 23);
+		btnload.setBounds(225, 35, 65, 25);
 		optionsPanel.add(btnload);
 
 		JComboBox<String> comboBox = new JComboBox<String>();
@@ -100,14 +103,14 @@ public class OldView {
 			List<Solution> solutions = bfController.getSolutions();
 			showSolutionPath(solutions, index);
 		});
-		comboBox.setBounds(10, 265, 199, 22);
+		comboBox.setBounds(10, 265, 199, 25);
 		comboBox.setEnabled(false);
 		System.out.println(comboBox.isEnabled());
 		optionsPanel.add(comboBox);
 		
 		JButton btngenerate = new JButton("Generar Soluciones");
 		btngenerate.setEnabled(false);
-		btngenerate.setBounds(50, 119, 125, 56);
+		btngenerate.setBounds(70, 130, 160, 30);
 		optionsPanel.add(btngenerate);
 		
 		btngenerate.addActionListener(e -> {
@@ -119,6 +122,39 @@ public class OldView {
 			}
 			comboBox.setModel(new DefaultComboBoxModel(solutions));
 			comboBox.setEnabled(true);
+			
+			JProgressBar progressBar = new JProgressBar();
+			progressBar.setBounds(10, 180, 280, 30);
+			optionsPanel.add(progressBar);
+			
+			textField = new JTextField();
+			textField.setBounds(10, 356, 100, 25);
+			optionsPanel.add(textField);
+			textField.setColumns(10);
+			
+			textField_1 = new JTextField();
+			textField_1.setColumns(10);
+			textField_1.setBounds(194, 356, 100, 25);
+			optionsPanel.add(textField_1);
+			
+			JLabel lblNewLabel = new JLabel("Sin poda");
+			lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 10));
+			lblNewLabel.setBounds(10, 333, 100, 20);
+			optionsPanel.add(lblNewLabel);
+			
+			JLabel lblConPoda = new JLabel("Con poda");
+			lblConPoda.setFont(new Font("Tahoma", Font.BOLD, 10));
+			lblConPoda.setBounds(194, 333, 100, 20);
+			optionsPanel.add(lblConPoda);
+			
+			JLabel lblNewLabel_1 = new JLabel("Tiempo total:");
+			lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 10));
+			lblNewLabel_1.setBounds(10, 307, 100, 20);
+			optionsPanel.add(lblNewLabel_1);
+			
+			JButton btnNewButton = new JButton("Cargar Matriz Aleatoria");
+			btnNewButton.setBounds(75, 70, 140, 25);
+			optionsPanel.add(btnNewButton);
 			System.out.println(comboBox.isEnabled());
 			
 			resetColors();
@@ -181,5 +217,4 @@ public class OldView {
 			}
 		}
 	}
-	
 }
