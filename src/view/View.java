@@ -16,11 +16,13 @@ public class View {
 	private JButton btnLoad;
 	private JButton btnGenerate;
     private JComboBox<String> comboBox;
+    private JProgressBar progressBar;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
     
 	private ReaderController rController = new ReaderController();
 	private BruteForceController bfController;
+	private SolutionEventHandler solutionHandler = null;
 	private JLabel[][] labels;
 
 	/**
@@ -54,6 +56,9 @@ public class View {
 		
 		optionsPanel= createOptionsPanel();
 		solutionsPanel = createSolutionsPanel();
+		progressBar = new JProgressBar();
+		progressBar.setBounds(10, 180, 280, 30);
+		optionsPanel.add(progressBar);
 		
 		frame.getContentPane().add(optionsPanel);
         frame.getContentPane().add(solutionsPanel);
@@ -134,6 +139,7 @@ public class View {
 			int[] attributes = rController.getMatrixAttributes();
 			labels= new JLabel[attributes[0]][attributes[1]];
 			setMatrixLayout(solutionsPanel, rController.getMatrix());
+			comboBox.setEnabled(false);
 			btnGenerate.setEnabled(true);
 			
 		} catch (Exception ex) {
@@ -144,18 +150,8 @@ public class View {
 	}
 	
 	private void generateSolutions() {
-		bfController.solve();
-		String[] solutions = new String[bfController.getAmountOfSolutions()];
-		for (int i = 0; i<solutions.length;i++) {
-			solutions[i] = "Solución " + (i+1);
-			
-		}
-		comboBox.setModel(new DefaultComboBoxModel<>(solutions));
-		comboBox.setEnabled(true);
-		//System.out.println(comboBox.isEnabled());
-		
-		resetColors();
-		showSolutionPath(bfController.getSolutions(), 0);
+		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, labels);
+		solutionHandler.execute();
 	
 	}
 
@@ -177,8 +173,8 @@ public class View {
 	
 	private void showSolutionPath(List<Solution> solutionList, int solutionIndex) {
 		for (int[] c : solutionList.get(solutionIndex).get_journey()) {
-		    int row = c[1];
-		    int col = c[0];
+		    int row = c[0];
+		    int col = c[1];
 		    if (row < labels.length && col < labels[0].length) {
 		        labels[row][col].setOpaque(true);
 		        labels[row][col].setBackground(Color.GREEN);
