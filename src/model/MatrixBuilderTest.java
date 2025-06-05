@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class MatrixGeneratorTest {
+public class MatrixBuilderTest {
 
 	@Test
 	public void testValidNSize() {
 
 		PresetGenerator generator = new PresetGenerator(4, 3, true);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		int expected = mg.generateSize();
 		
 		assertEquals(expected, 4);
@@ -20,7 +20,7 @@ public class MatrixGeneratorTest {
 	public void testValidMSize() {
 
 		PresetGenerator generator = new PresetGenerator(4, 3, false);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		int expected = mg.generateSize();
 		
 		assertEquals(expected, 3);
@@ -30,7 +30,7 @@ public class MatrixGeneratorTest {
 	public void testNMCompatible() {
 
 		PresetGenerator generator = new PresetGenerator(4, 3, true);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		
 		assertTrue(mg.verifyCompatible(4, 3));
 	}
@@ -39,7 +39,7 @@ public class MatrixGeneratorTest {
 	public void testNMnotCompatible() {
 
 		PresetGenerator generator = new PresetGenerator(4, 2, true);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		
 		assertFalse(mg.verifyCompatible(4, 2));
 	}
@@ -48,7 +48,7 @@ public class MatrixGeneratorTest {
 	public void testGeneratePositiveCharge() {
 
 		PresetGenerator generator = new PresetGenerator(true);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		int charge = mg.defineCharge();
 		assertEquals(charge,1);
 	}
@@ -57,7 +57,7 @@ public class MatrixGeneratorTest {
 	public void testGenerateNegativeCharge() {
 
 		PresetGenerator generator = new PresetGenerator(false);
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		int charge = mg.defineCharge();
 		assertEquals(charge,-1);
 	}
@@ -66,7 +66,7 @@ public class MatrixGeneratorTest {
 	public void testGenerateMatrix() {
 
 		RandomGenerator generator = new RandomGenerator();
-		MatrixGenerator mg = new MatrixGenerator(generator);
+		MatrixBuilder mg = new MatrixBuilder(generator);
 		int[][] matrix = mg.generateMatrix();
 		assertNotEquals(matrix,null);
 	}

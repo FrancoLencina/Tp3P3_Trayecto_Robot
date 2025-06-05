@@ -2,17 +2,18 @@ package controllers;
 
 import java.util.List;
 import model.Solution;
-import model.PruningSolver;
+import model.Solver;
 
 public class BruteForceController {
 
-	private PruningSolver s;
+	private Solver s;
 	
 	public BruteForceController(int[][] matrix) {
-		s = new PruningSolver(matrix);
+		s = new Solver(matrix);
 	}
 
 	public void solve() {
+		s.setBacktrackingEnabled(true);
 		s.solve();
 	}
 	

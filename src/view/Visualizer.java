@@ -40,8 +40,8 @@ public class Visualizer {
 	
 	void showSolutionPath(Solution solution) {
 		for (int[] c : solution.get_journey()) {
-		    int row = c[0];
-		    int col = c[1];
+		    int row = c[1];
+		    int col = c[0];
 		    if (row < matrixVisuals.length && col < matrixVisuals[0].length) {
 		    	matrixVisuals[row][col].setOpaque(true);
 		    	matrixVisuals[row][col].setBackground(Color.GREEN);

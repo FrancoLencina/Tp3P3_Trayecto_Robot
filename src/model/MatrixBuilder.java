@@ -1,12 +1,12 @@
 package model;
 
-public class MatrixGenerator {
+public class MatrixBuilder {
 
 	private Generator _random;
 	private int _origin = 2;
 	private int _bound = 11;
 	
-	public MatrixGenerator(Generator generator) {
+	public MatrixBuilder(Generator generator) {
 		_random = generator;
 	}
 	

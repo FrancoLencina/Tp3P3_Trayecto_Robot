@@ -24,14 +24,14 @@ public class View {
     private JProgressBar progressBar;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
-    
-	private ReaderController rController = new ReaderController();
+	private JLabel[][] labels;
 	private PropMaker maker = new PropMaker();
 	private Visualizer drawer;
-	private BruteForceController bfController;
-	private TimerController tc;
 	private SolutionEventHandler solutionHandler = null;
-	private JLabel[][] labels;
+	private BruteForceController bfController;
+	private TimerController tController;
+	private ReaderController rController;
+	private RandomController randController = new RandomController();
 
 	/**
 	 * Launch the application.
@@ -167,13 +167,31 @@ public class View {
 	
 	private void generateSolutions() {
 		drawer.resetMatrixColors();
-		tc= new TimerController();
+		tController= new TimerController();
 		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, 
-				tc, txtWithPruning, txtWithoutPruning);
+				tController, txtWithPruning, txtWithoutPruning);
 		solutionHandler.execute();
 	}
 	
 	private void loadRandomMatrix() {
-		//FALTAR CARGAR
+		try {
+			solutionsPanel.removeAll();
+			if (drawer!=null)
+				drawer.hideTime();
+			int[][] matrix = randController.getMatrix();
+			bfController = new BruteForceController(matrix);
+			labels= new JLabel[matrix.length][matrix[0].length];
+			solutionsPanel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
+			drawer = new Visualizer(labels, txtWithoutPruning, txtWithPruning);
+			drawer.drawMatrix(solutionsPanel, matrix);
+			solutionsPanel.revalidate();
+			solutionsPanel.repaint();
+			comboBox.setEnabled(false);
+			btnGenerate.setEnabled(true);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
