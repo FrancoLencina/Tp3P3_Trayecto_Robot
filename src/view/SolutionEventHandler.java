@@ -12,16 +12,16 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	private JTextField txtWithoutPruning;
 	private BruteForceController bfc;
 	private JProgressBar progressBar;
-	private JLabel[][] labels;
+	private Visualizer drawer;
 	private JComboBox<String> solutionsOutput;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, JLabel[][] labels,
+	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, Visualizer drawer,
 			TimerController timerController, JTextField txtWithPruning, JTextField txtWithoutPruning) {
 		this.bfc = controller;
 		this.progressBar = bar;
 		this.solutionsOutput = box;
-		this.labels = labels;
+		this.drawer = drawer;
 		this.timerController = timerController;
 		this.txtWithPruning = txtWithPruning;
 		this.txtWithoutPruning = txtWithoutPruning;
@@ -52,37 +52,22 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					}
 					solutionsOutput.setModel(new DefaultComboBoxModel<>(solutions));
 					solutionsOutput.setEnabled(true);
-					showFirstSolutionOnView();
+					drawer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
 				}
 				progressBar.setIndeterminate(false);
-				txtWithoutPruning.setVisible(true);
-			    txtWithPruning.setVisible(true);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	private void showFirstSolutionOnView() {
-		for (int[] c : bfc.getSolutions().get(0).get_journey()) {
-		    int row = c[0];
-		    int col = c[1];
-		    if (row < labels.length && col < labels[0].length) {
-		        labels[row][col].setOpaque(true);
-		        labels[row][col].setBackground(Color.GREEN);
-		    } else {
-		        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
-		    }
-		}
-	}
+
 	
 	private void timerOnScreen() {
 		double timeWithout= timerController.getBruteForceTime(bfc.getMatrix());
 		double timeWith= timerController.getPruningTime(bfc.getMatrix());
-		
-		txtWithoutPruning.setText(" "+timeWithout + " segs.");
-		txtWithPruning.setText(" "+timeWith + " segs.");
-		System.out.println("Tiempo Total sin poda: " + timeWithout + " segs.");
-		System.out.println("Tiempo Total con poda: " + timeWith + " segs.");
+		System.out.println("Tiempo sin poda: " + timeWithout);
+		System.out.println("Tiempo con poda: " + timeWith);
+		drawer.showTime(timeWithout, timeWith);
 	}
 }
 

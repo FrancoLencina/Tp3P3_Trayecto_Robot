@@ -27,6 +27,7 @@ public class View {
     
 	private ReaderController rController = new ReaderController();
 	private PropMaker maker = new PropMaker();
+	private Visualizer drawer;
 	private BruteForceController bfController;
 	private TimerController tc;
 	private SolutionEventHandler solutionHandler = null;
@@ -132,22 +133,28 @@ public class View {
 		btnRandomMatrix.addActionListener(e->{ loadRandomMatrix(); });
 		
 		comboBox.addItemListener(e -> {
-			resetColors();
+			drawer.resetMatrixColors();
 			int index = comboBox.getSelectedIndex();
 			List<Solution> solutions = bfController.getSolutions();
-			showSolutionPath(solutions, index);
+			drawer.showSolutionPath(solutions.get(index));
 		});
 	}
 
 	private void loadMatrix() {
 		try {
 			solutionsPanel.removeAll();
+			if (drawer!=null)
+				drawer.hideTime();
 			String route = txtRoute.getText();
 			rController.readFile(route);
 			bfController = new BruteForceController(rController.getMatrix());
 			int[] attributes = rController.getMatrixAttributes();
 			labels= new JLabel[attributes[0]][attributes[1]];
-			setMatrixLayout(solutionsPanel, rController.getMatrix());
+			solutionsPanel.setLayout(new GridLayout(attributes[0], attributes[1], 3, 3));
+			drawer = new Visualizer(labels, txtWithoutPruning, txtWithPruning);
+			drawer.drawMatrix(solutionsPanel, rController.getMatrix());
+			solutionsPanel.revalidate();
+			solutionsPanel.repaint();
 			comboBox.setEnabled(false);
 			btnGenerate.setEnabled(true);
 			
@@ -159,9 +166,9 @@ public class View {
 	}
 	
 	private void generateSolutions() {
-		resetColors();
+		drawer.resetMatrixColors();
 		tc= new TimerController();
-		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, labels, 
+		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, 
 				tc, txtWithPruning, txtWithoutPruning);
 		solutionHandler.execute();
 	}
@@ -169,44 +176,4 @@ public class View {
 	private void loadRandomMatrix() {
 		//FALTAR CARGAR
 	}
-
-	private void setMatrixLayout(JPanel panel, int[][] readMatrix) {
-		panel.setLayout(new GridLayout(readMatrix.length, readMatrix[0].length, 3, 3));
-		for (int i = 0; i< readMatrix.length; i++) {
-			for (int j = 0; j< readMatrix[0].length; j++) {
-				JLabel text = new JLabel("" + readMatrix[i][j]);
-				labels[i][j] = text;
-				text.setBackground(Color.WHITE);
-				text.setForeground(Color.BLACK);
-				text.setFont(new Font("Arial", 0, 25));
-				text.setHorizontalAlignment(JTextField.CENTER);
-				labels[i][j].setOpaque(true);
-				panel.add(labels[i][j]);
-				panel.revalidate();
-				panel.repaint();
-			}
-		}
-	}
-	
-	private void showSolutionPath(List<Solution> solutionList, int solutionIndex) {
-		for (int[] c : solutionList.get(solutionIndex).get_journey()) {
-		    int row = c[0];
-		    int col = c[1];
-		    if (row < labels.length && col < labels[0].length) {
-		        labels[row][col].setOpaque(true);
-		        labels[row][col].setBackground(Color.GREEN);
-		    } else {
-		        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
-		    }
-		}
-	}
-	
-	private void resetColors() {
-		for (int i = 0; i< labels.length; i++) {
-			for (int j = 0; j< labels[0].length; j++) {
-				labels[i][j].setBackground(Color.WHITE);
-			}
-		}
-	}
-	
 }
