@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Color;
 import javax.swing.*;
 import controllers.BruteForceController;
 import controllers.TimerController;
@@ -8,8 +7,6 @@ import controllers.TimerController;
 public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
 	private TimerController timerController;
-	private JTextField txtWithPruning;
-	private JTextField txtWithoutPruning;
 	private BruteForceController bfc;
 	private JProgressBar progressBar;
 	private Visualizer drawer;
@@ -17,14 +14,12 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
 	
 	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, Visualizer drawer,
-			TimerController timerController, JTextField txtWithPruning, JTextField txtWithoutPruning) {
+			TimerController timerController) {
 		this.bfc = controller;
 		this.progressBar = bar;
 		this.solutionsOutput = box;
 		this.drawer = drawer;
 		this.timerController = timerController;
-		this.txtWithPruning = txtWithPruning;
-		this.txtWithoutPruning = txtWithoutPruning;
 	}
 	
 	

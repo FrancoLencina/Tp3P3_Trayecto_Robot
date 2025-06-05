@@ -170,7 +170,7 @@ public class View {
 		drawer.resetMatrixColors();
 		tController= new TimerController();
 		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, 
-				tController, txtWithPruning, txtWithoutPruning);
+				tController);
 		solutionHandler.execute();
 	}
 	

@@ -25,6 +25,6 @@ public class PresetGenerator implements Generator {
 	@Override
 	public int nextInt(int n, int m) {
 		_retN = !_retN;
-		return _retN ? _n : _m;
+		return _retN ? _n : _m; //Elegimos el nextInt en un Patron para que pueda crear una matriz sin problemas.
 	}
 }

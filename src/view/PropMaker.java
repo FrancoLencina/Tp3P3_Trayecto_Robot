@@ -1,11 +1,7 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 
 public class PropMaker {
 	
