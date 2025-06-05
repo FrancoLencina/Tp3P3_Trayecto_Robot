@@ -70,5 +70,14 @@ public class MatrixBuilderTest {
 		int[][] matrix = mg.generateMatrix();
 		assertNotEquals(matrix,null);
 	}
+	
+	@Test
+	public void testGeneratePresetMatrix() {
+
+		PresetGenerator generator = new PresetGenerator(4, 3, true);
+		MatrixBuilder mg = new MatrixBuilder(generator);
+		int[][] matrix = mg.generateMatrix();
+		assertNotEquals(matrix,null);
+	}
 }
 

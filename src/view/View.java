@@ -30,7 +30,7 @@ public class View {
 	private SolutionEventHandler solutionHandler = null;
 	private BruteForceController bfController;
 	private TimerController tController;
-	private ReaderController rController;
+	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
 
 	/**
