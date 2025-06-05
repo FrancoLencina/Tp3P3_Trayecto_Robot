@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
-public class PropFactory {
+public class PropMaker {
 	
 	public JPanel createPanel(int x, int y, int width, int height) {
 		JPanel panel = new JPanel();
@@ -47,12 +47,6 @@ public class PropFactory {
 		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.setBounds(x, y, width, height);
 		return comboBox;
-	}
-	
-	public void colorPanelAndBorder(Color color, JPanel panel) {
-		panel.setBackground(color);
-		panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, color, null, null, null));
-		
 	}
 	
 }

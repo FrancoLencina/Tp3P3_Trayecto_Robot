@@ -3,6 +3,8 @@ package view;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 
 import controllers.*;
 import model.Solution;
@@ -24,7 +26,7 @@ public class View {
     private JPanel optionsPanel;
     
 	private ReaderController rController = new ReaderController();
-	private PropFactory factory = new PropFactory();
+	private PropMaker maker = new PropMaker();
 	private BruteForceController bfController;
 	private TimerController tc;
 	private SolutionEventHandler solutionHandler = null;
@@ -71,8 +73,11 @@ public class View {
 	}
 	
 	private void createPanels() {
-		optionsPanel = createOptionsPanel();
-		solutionsPanel = createSolutionsPanel();
+		optionsPanel = maker.createPanel(475, 11, 300, 420);
+		setUpOptionsPanel();
+		solutionsPanel = maker.createPanel(10, 11, 454, 420);
+		solutionsPanel.setBackground(Color.black);
+		solutionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, Color.black, null, null, null));
 	}
 	
 	private void addPanelsToFrame() {
@@ -80,27 +85,25 @@ public class View {
         frame.getContentPane().add(solutionsPanel);
 	}
 	
-	private JPanel createOptionsPanel() {
-		JPanel panel = factory.createPanel(475, 11, 300, 420);
-		createLabels(panel);
-		createTextField(panel);
-		createButtons(panel);
-		createOthers(panel);	
-		return panel;
+	private void setUpOptionsPanel() {
+		addLabelsToOptionsPanel();
+		addTextFieldsToOptionsPanel();
+		addButtonsToOptionsPanel();
+		addMiscToOptionsPanel();	
 	}
 	
-	private void createLabels(JPanel panel) {
-		panel.add(factory.createLabel(10, 10, 183, 30, "Ingresa ruta del archivo:"));
-		panel.add(factory.createLabel(10, 240, 106, 20, "Soluciones:"));
-		panel.add(factory.createLabel(10, 333, 100, 20, "Sin poda:"));
-		panel.add(factory.createLabel(194, 333, 100, 20, "Con poda:"));
-		panel.add(factory.createLabel(10, 307, 100, 20, "Tiempo total:"));
+	private void addLabelsToOptionsPanel() {
+		optionsPanel.add(maker.createLabel(10, 10, 183, 30, "Ingresa ruta del archivo:"));
+		optionsPanel.add(maker.createLabel(10, 240, 106, 20, "Soluciones:"));
+		optionsPanel.add(maker.createLabel(10, 333, 100, 20, "Sin poda:"));
+		optionsPanel.add(maker.createLabel(194, 333, 100, 20, "Con poda:"));
+		optionsPanel.add(maker.createLabel(10, 307, 100, 20, "Tiempo total:"));
 	}
 	
-	private void createTextField(JPanel panel) {
-		panel.add(txtRoute = factory.createTextField(10, 35, 200, 25, "src/fileReader/exampleMatrix.json"));
-		panel.add(txtWithoutPruning = factory.createTextField(10, 356, 110, 25, null));
-		panel.add(txtWithPruning = factory.createTextField(194, 356, 110, 25, null));
+	private void addTextFieldsToOptionsPanel() {
+		optionsPanel.add(txtRoute = maker.createTextField(10, 35, 200, 25, "src/fileReader/exampleMatrix.json"));
+		optionsPanel.add(txtWithoutPruning = maker.createTextField(10, 356, 110, 25, null));
+		optionsPanel.add(txtWithPruning = maker.createTextField(194, 356, 110, 25, null));
 
 		txtWithoutPruning.setEditable(false);
 		txtWithoutPruning.setVisible(false);
@@ -108,25 +111,19 @@ public class View {
 		txtWithPruning.setVisible(false);
 	}
 	
-	private void createButtons(JPanel panel) {
-		panel.add(btnGenerate = factory.createButton(70, 130, 160, 30, "Generar Soluciones"));
+	private void addButtonsToOptionsPanel() {
+		optionsPanel.add(btnGenerate = maker.createButton(70, 130, 160, 30, "Generar Soluciones"));
 		btnGenerate.setEnabled(false);
-		panel.add(btnLoad = factory.createButton(215, 35, 80, 25, "Cargar"));
-		panel.add(btnRandomMatrix = factory.createButton(60, 70, 180, 25, "Cargar Matriz Aleatoria"));
+		optionsPanel.add(btnLoad = maker.createButton(215, 35, 80, 25, "Cargar"));
+		optionsPanel.add(btnRandomMatrix = maker.createButton(60, 70, 180, 25, "Cargar Matriz Aleatoria"));
 	}
 	
-	private void createOthers(JPanel panel) {
-		panel.add(comboBox = factory.createStringComboBox(10, 265, 199, 25));
+	private void addMiscToOptionsPanel() {
+		optionsPanel.add(comboBox = maker.createStringComboBox(10, 265, 199, 25));
 		comboBox.setEnabled(false);
-		panel.add(progressBar = factory.createProgressBar(10, 180, 280, 30));
+		optionsPanel.add(progressBar = maker.createProgressBar(10, 180, 280, 30));
 	}
-	
-	private JPanel createSolutionsPanel() {
-		JPanel panel = factory.createPanel(10, 11, 454, 420);
-		factory.colorPanelAndBorder(new Color(0, 0, 0), panel);
-		return panel;
-	}
-	
+
 	private void setUpListeners() {
 		btnLoad.addActionListener(e-> { loadMatrix(); });
 		
@@ -162,9 +159,10 @@ public class View {
 	}
 	
 	private void generateSolutions() {
+		resetColors();
 		tc= new TimerController();
 		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, labels, 
-				tc, txtWithoutPruning, txtWithPruning);
+				tc, txtWithPruning, txtWithoutPruning);
 		solutionHandler.execute();
 	}
 	
@@ -184,6 +182,8 @@ public class View {
 				text.setHorizontalAlignment(JTextField.CENTER);
 				labels[i][j].setOpaque(true);
 				panel.add(labels[i][j]);
+				panel.revalidate();
+				panel.repaint();
 			}
 		}
 	}
