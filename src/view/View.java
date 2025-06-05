@@ -1,11 +1,12 @@
 package view;
 
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
-
+import javax.swing.filechooser.FileNameExtensionFilter;
 import controllers.*;
 import model.Solution;
 
@@ -16,7 +17,6 @@ public class View {
 	private JTextField txtWithPruning;
 	private JTextField txtWithoutPruning;
 	
-	
 	private JButton btnLoad;
 	private JButton btnGenerate;
 	private JButton btnRandomMatrix;
@@ -25,7 +25,9 @@ public class View {
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
 	private JLabel[][] labels;
+	
 	private PropMaker maker = new PropMaker();
+	private JFileChooser fc = new JFileChooser();
 	private Visualizer drawer;
 	private SolutionEventHandler solutionHandler = null;
 	private BruteForceController bfController;
@@ -102,10 +104,11 @@ public class View {
 	}
 	
 	private void addTextFieldsToOptionsPanel() {
-		optionsPanel.add(txtRoute = maker.createTextField(10, 35, 200, 25, "src/fileReader/exampleMatrix.json"));
+		optionsPanel.add(txtRoute = maker.createTextField(10, 35, 200, 25, ""));
 		optionsPanel.add(txtWithoutPruning = maker.createTextField(10, 356, 110, 25, null));
 		optionsPanel.add(txtWithPruning = maker.createTextField(194, 356, 110, 25, null));
 
+		txtRoute.setEditable(false);
 		txtWithoutPruning.setEditable(false);
 		txtWithoutPruning.setVisible(false);
 		txtWithPruning.setEditable(false);
@@ -126,7 +129,7 @@ public class View {
 	}
 
 	private void setUpListeners() {
-		btnLoad.addActionListener(e-> { loadMatrix(); });
+		btnLoad.addActionListener(e-> { fileSelector(); loadMatrix(); });
 		
 		btnGenerate.addActionListener(e -> { generateSolutions(); });
 		
@@ -138,6 +141,24 @@ public class View {
 			List<Solution> solutions = bfController.getSolutions();
 			drawer.showSolutionPath(solutions.get(index));
 		});
+	}
+	
+	private void fileSelector() {
+		fc.setCurrentDirectory(new File("src/fileReader"));
+		FileNameExtensionFilter filter= new FileNameExtensionFilter("Archivos JSON","json");
+		fc.setFileFilter(filter);
+		
+		fc.setDialogTitle("Seleccionar archivo JSON de matriz");
+		int returnVal= fc.showOpenDialog(frame);
+		if(returnVal==JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			
+			if(!file.getName().endsWith(".json")) {
+				JOptionPane.showMessageDialog(null, "Solo se permiten archivos .json", "Archivo invalido",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			txtRoute.setText(file.getAbsolutePath());
+		}
 	}
 
 	private void loadMatrix() {
