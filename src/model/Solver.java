@@ -11,6 +11,13 @@ public class Solver {
 	private int[][] _matrix;
 	
 	public Solver(int [][] matrix) {
+		if (matrix.length == 0 || matrix[0].length == 0) {
+	        throw new IllegalArgumentException("La matriz no puede estar vacía");
+	    }
+		if (matrix.length == matrix[0].length) {
+	        throw new IllegalArgumentException("La matriz no puede ser cuadrada");
+	    }
+		
 		_matrix = matrix;
 		_n = matrix[0].length;
 		_m = matrix.length;
