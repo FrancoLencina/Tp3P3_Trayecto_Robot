@@ -1,6 +1,7 @@
 package model;
 
 public class Timer {
+
 	public double getBruteForceTime(int [][]matrix) {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i <1; i++) {
