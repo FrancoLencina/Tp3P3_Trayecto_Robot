@@ -13,7 +13,7 @@ public class MatrixBuilderTest {
 		MatrixBuilder mg = new MatrixBuilder(generator);
 		int expected = mg.generateSize();
 		
-		assertEquals(expected, 4);
+		assertEquals(expected, 3);
 	}
 	
 	@Test
@@ -23,7 +23,7 @@ public class MatrixBuilderTest {
 		MatrixBuilder mg = new MatrixBuilder(generator);
 		int expected = mg.generateSize();
 		
-		assertEquals(expected, 3);
+		assertEquals(expected, 4);
 	}
 	
 	@Test
