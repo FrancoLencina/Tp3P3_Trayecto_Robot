@@ -1,26 +1,30 @@
 package view;
 
 import java.awt.Color;
-import java.util.List;
-
 import javax.swing.*;
-
 import controllers.BruteForceController;
-import model.Solution;
+import controllers.TimerController;
 
 public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
+	private TimerController timerController;
+	private JTextField txtWithPruning;
+	private JTextField txtWithoutPruning;
 	private BruteForceController bfc;
 	private JProgressBar progressBar;
 	private JLabel[][] labels;
 	private JComboBox<String> solutionsOutput;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, JLabel[][] labels) {
+	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, JLabel[][] labels,
+			TimerController timerController, JTextField txtWithPruning, JTextField txtWithoutPruning) {
 		this.bfc = controller;
 		this.progressBar = bar;
 		this.solutionsOutput = box;
 		this.labels = labels;
+		this.timerController = timerController;
+		this.txtWithPruning = txtWithPruning;
+		this.txtWithoutPruning = txtWithoutPruning;
 	}
 	
 	
@@ -32,11 +36,14 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		return true;
 	}
 	
+	
+
+
 	@Override
 	public void done() {
 		try {
-			if (!this.isCancelled())
-			{;
+			if (!this.isCancelled()) {
+				timerOnScreen();
 				if (bfc.getAmountOfSolutions()!=0) {
 					String[] solutions = new String[bfc.getAmountOfSolutions()];
 					for (int i = 0; i<solutions.length;i++) {
@@ -48,6 +55,8 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					showFirstSolutionOnView();
 				}
 				progressBar.setIndeterminate(false);
+				txtWithoutPruning.setVisible(true);
+			    txtWithPruning.setVisible(true);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -64,6 +73,16 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		        System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
 		    }
 		}
+	}
+	
+	private void timerOnScreen() {
+		double timeWithout= timerController.getBruteForceTime(bfc.getMatrix());
+		double timeWith= timerController.getPruningTime(bfc.getMatrix());
+		
+		txtWithoutPruning.setText(" "+timeWithout + " segs.");
+		txtWithPruning.setText(" "+timeWith + " segs.");
+		System.out.println("Tiempo Total sin poda: " + timeWithout + " segs.");
+		System.out.println("Tiempo Total con poda: " + timeWith + " segs.");
 	}
 }
 

@@ -23,4 +23,8 @@ public class BruteForceController {
 	public int getAmountOfSolutions() {
 		return s.solutionsSize();
 	}
+	
+	public int[][] getMatrix(){
+		return s.get_matrix();
+	}
 }

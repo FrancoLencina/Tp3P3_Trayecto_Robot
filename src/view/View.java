@@ -3,7 +3,6 @@ package view;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.border.*;
 
 import controllers.*;
 import model.Solution;
@@ -11,17 +10,23 @@ import model.Solution;
 public class View {
 
 	private JFrame frame;
-	private JTextField textRoute;
+	private JTextField txtRoute;
+	private JTextField txtWithPruning;
+	private JTextField txtWithoutPruning;
+	
 	
 	private JButton btnLoad;
 	private JButton btnGenerate;
+	private JButton btnRandomMatrix;
     private JComboBox<String> comboBox;
     private JProgressBar progressBar;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
     
 	private ReaderController rController = new ReaderController();
+	private PropFactory factory = new PropFactory();
 	private BruteForceController bfController;
+	private TimerController tc;
 	private SolutionEventHandler solutionHandler = null;
 	private JLabel[][] labels;
 
@@ -53,74 +58,81 @@ public class View {
 	 */
 	private void initialize() {
 		setUpFrame();
-		
-		optionsPanel= createOptionsPanel();
-		solutionsPanel = createSolutionsPanel();
-		progressBar = new JProgressBar();
-		progressBar.setBounds(10, 180, 280, 30);
-		optionsPanel.add(progressBar);
-		
-		frame.getContentPane().add(optionsPanel);
-        frame.getContentPane().add(solutionsPanel);
-        
-        Listeners();
-		
-	}
-
-	private JPanel createSolutionsPanel() {
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(0, 0, 0));
-		panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
-		panel.setBounds(10, 11, 454, 419);
-		
-		return panel;
+		createPanels();
+		addPanelsToFrame();
+        setUpListeners();
 	}
 
 	private void setUpFrame() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 720, 480);
+		frame.setBounds(100, 100, 800, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 	}
 	
+	private void createPanels() {
+		optionsPanel = createOptionsPanel();
+		solutionsPanel = createSolutionsPanel();
+	}
+	
+	private void addPanelsToFrame() {
+		frame.getContentPane().add(optionsPanel);
+        frame.getContentPane().add(solutionsPanel);
+	}
+	
 	private JPanel createOptionsPanel() {
-		JPanel panel = new JPanel();
-		panel.setBounds(475, 11, 219, 419);
-		panel.setLayout(null);
-		
-		JLabel lblroute = new JLabel("Ingresa ruta del archivo:");
-		lblroute.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblroute.setBounds(10, 24, 183, 29);
-		panel.add(lblroute);
-		
-		textRoute = new JTextField();
-		textRoute.setText("src/fileReader/exampleMatrix.json");
-		textRoute.setBounds(10, 51, 125, 28);
-		panel.add(textRoute);
-		textRoute.setColumns(10);
-		
-		btnLoad = new JButton("Cargar");		
-		btnLoad.setBounds(144, 54, 65, 23);
-		panel.add(btnLoad);
-		
-		btnGenerate = new JButton("Generar Soluciones");
-		btnGenerate.setEnabled(false);
-		btnGenerate.setBounds(50, 119, 125, 56);
-		panel.add(btnGenerate);
-		
-		comboBox = new JComboBox<>();
-		comboBox.setBounds(10, 265, 199, 22);
-		comboBox.setEnabled(false);
-		//System.out.println(comboBox.isEnabled());
-		panel.add(comboBox);
-		
+		JPanel panel = factory.createPanel(475, 11, 300, 420);
+		createLabels(panel);
+		createTextField(panel);
+		createButtons(panel);
+		createOthers(panel);	
 		return panel;
 	}
 	
-	private void Listeners() {
+	private void createLabels(JPanel panel) {
+		panel.add(factory.createLabel(10, 10, 183, 30, "Ingresa ruta del archivo:"));
+		panel.add(factory.createLabel(10, 240, 106, 20, "Soluciones:"));
+		panel.add(factory.createLabel(10, 333, 100, 20, "Sin poda:"));
+		panel.add(factory.createLabel(194, 333, 100, 20, "Con poda:"));
+		panel.add(factory.createLabel(10, 307, 100, 20, "Tiempo total:"));
+	}
+	
+	private void createTextField(JPanel panel) {
+		panel.add(txtRoute = factory.createTextField(10, 35, 200, 25, "src/fileReader/exampleMatrix.json"));
+		panel.add(txtWithoutPruning = factory.createTextField(10, 356, 110, 25, null));
+		panel.add(txtWithPruning = factory.createTextField(194, 356, 110, 25, null));
+
+		txtWithoutPruning.setEditable(false);
+		txtWithoutPruning.setVisible(false);
+		txtWithPruning.setEditable(false);
+		txtWithPruning.setVisible(false);
+	}
+	
+	private void createButtons(JPanel panel) {
+		panel.add(btnGenerate = factory.createButton(70, 130, 160, 30, "Generar Soluciones"));
+		btnGenerate.setEnabled(false);
+		panel.add(btnLoad = factory.createButton(215, 35, 80, 25, "Cargar"));
+		panel.add(btnRandomMatrix = factory.createButton(60, 70, 180, 25, "Cargar Matriz Aleatoria"));
+	}
+	
+	private void createOthers(JPanel panel) {
+		panel.add(comboBox = factory.createStringComboBox(10, 265, 199, 25));
+		comboBox.setEnabled(false);
+		panel.add(progressBar = factory.createProgressBar(10, 180, 280, 30));
+	}
+	
+	private JPanel createSolutionsPanel() {
+		JPanel panel = factory.createPanel(10, 11, 454, 420);
+		factory.colorPanelAndBorder(new Color(0, 0, 0), panel);
+		return panel;
+	}
+	
+	private void setUpListeners() {
 		btnLoad.addActionListener(e-> { loadMatrix(); });
 		
 		btnGenerate.addActionListener(e -> { generateSolutions(); });
+		
+		btnRandomMatrix.addActionListener(e->{ loadRandomMatrix(); });
 		
 		comboBox.addItemListener(e -> {
 			resetColors();
@@ -133,7 +145,7 @@ public class View {
 	private void loadMatrix() {
 		try {
 			solutionsPanel.removeAll();
-			String route = textRoute.getText();
+			String route = txtRoute.getText();
 			rController.readFile(route);
 			bfController = new BruteForceController(rController.getMatrix());
 			int[] attributes = rController.getMatrixAttributes();
@@ -150,9 +162,14 @@ public class View {
 	}
 	
 	private void generateSolutions() {
-		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, labels);
+		tc= new TimerController();
+		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, labels, 
+				tc, txtWithoutPruning, txtWithPruning);
 		solutionHandler.execute();
+	}
 	
+	private void loadRandomMatrix() {
+		//FALTAR CARGAR
 	}
 
 	private void setMatrixLayout(JPanel panel, int[][] readMatrix) {
