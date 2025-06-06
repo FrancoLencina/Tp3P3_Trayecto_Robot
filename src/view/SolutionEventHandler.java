@@ -8,24 +8,21 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
 	private TimerController timerController;
 	private BruteForceController bfc;
-	private JProgressBar progressBar;
-	private Visualizer drawer;
+	private Visualizer visualizer;
 	private JComboBox<String> solutionsOutput;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, JComboBox<String> box,
+	public SolutionEventHandler(BruteForceController controller, Visualizer visuals,JComboBox<String> box,
 			TimerController timerController) {
 		this.bfc = controller;
-		this.progressBar = bar;
 		this.solutionsOutput = box;
-		this.drawer = drawer;
+		this.visualizer = visuals;
 		this.timerController = timerController;
 	}
 	
 	
 	@Override
 	protected Boolean doInBackground() {
-		progressBar.setIndeterminate(true);
 		bfc.solve();
 		System.out.println(bfc.getAmountOfSolutions());
 		return true;
@@ -38,7 +35,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	public void done() {
 		try {
 			if (!this.isCancelled()) {
-				timerOnScreen();
+//				timerOnScreen();
 				if (bfc.getAmountOfSolutions()!=0) {
 					String[] solutions = new String[bfc.getAmountOfSolutions()];
 					for (int i = 0; i<solutions.length;i++) {
@@ -47,9 +44,8 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					}
 					solutionsOutput.setModel(new DefaultComboBoxModel<>(solutions));
 					solutionsOutput.setEnabled(true);
-					drawer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
+					visualizer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
 				}
-				progressBar.setIndeterminate(false);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -63,7 +59,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		System.out.println("Tiempo sin poda: " + timeWithout);
 		System.out.println("Tiempo con poda: " + timeWith);
 		//ACA IRIA ALGO DE TABLA
-		drawer.showTime(timeWithout, timeWith);
+		visualizer.showTime(timeWithout, timeWith);
 	}
 }
 

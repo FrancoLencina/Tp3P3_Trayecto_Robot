@@ -7,14 +7,10 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import controllers.*;
 import model.Solution;
-import view.MatrixHandler.MatrixHandler;
 
 public class View extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JTextField txtRoute;
-	private JTextField txtWithPruning;
-	private JTextField txtWithoutPruning;
-	
     private JLabel[][] labels;
 	private JButton btnLoad;
 	private JButton btnGenerate;
@@ -26,20 +22,17 @@ public class View extends JFrame{
     private JPanel optionsPanel;
 	private PropMaker maker = new PropMaker();
 	private FileChooser chooser = new FileChooser();
-	//private BruteForceController bfController = new BruteForceController();
+	private Visualizer visualizer = new Visualizer();
+	private BruteForceController bfController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
-	private Visualizer visualizer = new Visualizer();
-	private SolutionEventHandler
+	private TimerController tController = new TimerController();
+	private SolutionEventHandler solutionHandler = null;
 
 	public View() {
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
-		
-//		matrixController = new MatrixHandler(solutionsPanel, txtRoute, txtWithoutPruning,
-//				txtWithPruning, btnGenerate, comboBox, progressBar, rController, randController);
-		
         setUpListeners();
 	}
 
@@ -84,14 +77,8 @@ public class View extends JFrame{
 		table.setBounds(60, 260, 200, 150);
 		optionsPanel.add(table);
 		table.setVisible(false);
-		optionsPanel.add(txtWithoutPruning = maker.createTextField(10, 356, 110, 25, null));
-		optionsPanel.add(txtWithPruning = maker.createTextField(194, 356, 110, 25, null));
 
 		txtRoute.setEditable(false);
-		txtWithoutPruning.setEditable(false);
-		txtWithoutPruning.setVisible(false);
-		txtWithPruning.setEditable(false);
-		txtWithPruning.setVisible(false);
 	}
 	
 	private void addButtonsToOptionsPanel() {
@@ -112,6 +99,7 @@ public class View extends JFrame{
 		    chooser.fileSelector(txtRoute, this);
 		    rController.readFile(chooser.getRoute());
 		    loadMatrix(rController.getMatrix());
+		    bfController = new BruteForceController(rController.getMatrix());
 			visualizer.setMatrixLabel(labels);
 		    visualizer.drawMatrix(solutionsPanel,rController.getMatrix());
 		    solutionsPanel.revalidate();
@@ -121,20 +109,21 @@ public class View extends JFrame{
 		 btnRandomMatrix.addActionListener(e -> {
             int[][] rm = randController.getMatrix();
             loadMatrix(rm);
+            bfController = new BruteForceController(rm);
 			visualizer.setMatrixLabel(labels);
             visualizer.drawMatrix(solutionsPanel,rm);
             solutionsPanel.revalidate();
             solutionsPanel.repaint();
 		});
 
-		btnGenerate.addActionListener(e -> matrixController.generateSolutions());
+		btnGenerate.addActionListener(e -> generateSolutions());
 
 		comboBox.addItemListener(e -> {
 			visualizer.setMatrixLabel(labels);
 			visualizer.resetMatrixColors();
 		    int index = comboBox.getSelectedIndex();
-		    List<Solution> solutions = bfController.getBruteForceController().getSolutions();
-		    matrixController.getDrawer().showSolutionPath(solutions.get(index));
+		    List<Solution> solutions = bfController.getSolutions();
+		    visualizer.showSolutionPath(solutions.get(index));
 		});
 
 	}
@@ -161,10 +150,13 @@ public class View extends JFrame{
 	
 	   public void generateSolutions() {
 
-	        //tController = new TimerController();
-
-	        solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, tController);
+	        solutionHandler = new SolutionEventHandler(bfController, visualizer, comboBox, tController);
 	        solutionHandler.execute();
+	        progressBar.setIndeterminate(true);
+	        while (!solutionHandler.isDone()) {
+	        	progressBar.setValue(progressBar.getValue()+bfController.get_cant());
+	        }
+	        progressBar.setIndeterminate(false);
 	    }
 
 }
