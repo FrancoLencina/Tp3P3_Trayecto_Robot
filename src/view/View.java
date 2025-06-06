@@ -8,9 +8,8 @@ import javax.swing.border.SoftBevelBorder;
 import controllers.*;
 import model.Solution;
 
-public class View {
-
-	private JFrame frame;
+public class View extends JFrame{
+	private static final long serialVersionUID = 1L;
 	private JTextField txtRoute;
 	private JTextField txtWithPruning;
 	private JTextField txtWithoutPruning;
@@ -33,33 +32,7 @@ public class View {
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					View window = new View();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
 	public View() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
@@ -67,10 +40,10 @@ public class View {
 	}
 
 	private void setUpFrame() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 480);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		setTitle("Titulo");
+		setBounds(100, 100, 800, 480);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
 	}
 	
 	private void createPanels() {
@@ -82,8 +55,8 @@ public class View {
 	}
 	
 	private void addPanelsToFrame() {
-		frame.getContentPane().add(optionsPanel);
-        frame.getContentPane().add(solutionsPanel);
+		getContentPane().add(optionsPanel);
+        getContentPane().add(solutionsPanel);
 	}
 	
 	private void setUpOptionsPanel() {
@@ -127,7 +100,7 @@ public class View {
 	}
 
 	private void setUpListeners() {
-		btnLoad.addActionListener(e-> { chooser.fileSelector(txtRoute, frame); loadMatrix(); });
+		btnLoad.addActionListener(e-> { chooser.fileSelector(txtRoute, this); loadMatrix(); });
 		
 		btnGenerate.addActionListener(e -> { generateSolutions(); });
 		
@@ -147,7 +120,15 @@ public class View {
 			if (drawer!=null)
 				drawer.hideTime();
 			String route = txtRoute.getText();
+			if (route==null || route.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "No se ha seleccionada ningun archivo", "Aviso", JOptionPane.WARNING_MESSAGE);			
+				return;
+			}
 			rController.readFile(route);
+			if (rController.getMatrix()==null) {
+				JOptionPane.showMessageDialog(null, "No se pudo cargar la matriz del archivo", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			bfController = new BruteForceController(rController.getMatrix());
 			int[] attributes = rController.getMatrixAttributes();
 			labels= new JLabel[attributes[0]][attributes[1]];
@@ -158,10 +139,10 @@ public class View {
 			solutionsPanel.repaint();
 			comboBox.setEnabled(false);
 			btnGenerate.setEnabled(true);
-			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 	
 	}
