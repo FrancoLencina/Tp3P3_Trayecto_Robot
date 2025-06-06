@@ -1,4 +1,4 @@
-package fileReader;
+package view;
 
 import java.io.File;
 
@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class FileChooser {
 	
 	private JFileChooser fc = new JFileChooser();
+	private String route;
 	
 	public void fileSelector(JTextField txtRoute, JFrame frame) {
 		fc.setCurrentDirectory(new File("src/fileReader"));
@@ -23,7 +24,12 @@ public class FileChooser {
 				JOptionPane.showMessageDialog(null, "Solo se permiten archivos .json", "Archivo invalido",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			txtRoute.setText(file.getAbsolutePath());
+			route = file.getAbsolutePath();
+			txtRoute.setText(route);
+			
 		}
+	}
+	public String getRoute() {
+		return route;
 	}
 }

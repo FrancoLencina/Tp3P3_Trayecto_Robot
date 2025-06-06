@@ -13,7 +13,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	private JComboBox<String> solutionsOutput;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, JProgressBar bar, JComboBox<String> box, Visualizer drawer,
+	public SolutionEventHandler(BruteForceController controller, JComboBox<String> box,
 			TimerController timerController) {
 		this.bfc = controller;
 		this.progressBar = bar;

@@ -16,10 +16,9 @@ public class Visualizer {
 	private JTextField time1Text; // Tiempo sin poda
 	private JTextField time2Text; // Tiempo con poda
 	
-	public Visualizer(JLabel[][] labels, JTextField textField1, JTextField textField2) {
-		this.matrixVisuals = labels;
-		this.time1Text = textField1;
-		this.time2Text = textField2;
+	public Visualizer() {
+//		this.time1Text = textField1;
+//		this.time2Text = textField2;
 	}
 
 	public void drawMatrix(JPanel panel, int[][] matrix) {
@@ -72,5 +71,9 @@ public class Visualizer {
 	public void hideTime() {
 		time1Text.setVisible(false);
 		time2Text.setVisible(false);
+	}
+
+	public void setMatrixLabel(JLabel[][] labels) {
+		matrixVisuals = labels;
 	}
 }

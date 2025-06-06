@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import controllers.*;
-import fileReader.FileChooser;
 import model.Solution;
 import view.MatrixHandler.MatrixHandler;
 
@@ -16,6 +15,7 @@ public class View extends JFrame{
 	private JTextField txtWithPruning;
 	private JTextField txtWithoutPruning;
 	
+    private JLabel[][] labels;
 	private JButton btnLoad;
 	private JButton btnGenerate;
 	private JButton btnRandomMatrix;
@@ -26,17 +26,19 @@ public class View extends JFrame{
     private JPanel optionsPanel;
 	private PropMaker maker = new PropMaker();
 	private FileChooser chooser = new FileChooser();
-	private MatrixHandler matrixController;
+	//private BruteForceController bfController = new BruteForceController();
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
+	private Visualizer visualizer = new Visualizer();
+	private SolutionEventHandler
 
 	public View() {
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
 		
-		matrixController = new MatrixHandler(solutionsPanel, txtRoute, txtWithoutPruning,
-				txtWithPruning, btnGenerate, comboBox, progressBar, rController, randController);
+//		matrixController = new MatrixHandler(solutionsPanel, txtRoute, txtWithoutPruning,
+//				txtWithPruning, btnGenerate, comboBox, progressBar, rController, randController);
 		
         setUpListeners();
 	}
@@ -108,19 +110,61 @@ public class View extends JFrame{
 	private void setUpListeners() {
 		btnLoad.addActionListener(e -> {
 		    chooser.fileSelector(txtRoute, this);
-		    matrixController.loadMatrix();
+		    rController.readFile(chooser.getRoute());
+		    loadMatrix(rController.getMatrix());
+			visualizer.setMatrixLabel(labels);
+		    visualizer.drawMatrix(solutionsPanel,rController.getMatrix());
+		    solutionsPanel.revalidate();
+		    solutionsPanel.repaint();
 		});
 
-		btnRandomMatrix.addActionListener(e -> matrixController.loadRandomMatrix());
+		 btnRandomMatrix.addActionListener(e -> {
+            int[][] rm = randController.getMatrix();
+            loadMatrix(rm);
+			visualizer.setMatrixLabel(labels);
+            visualizer.drawMatrix(solutionsPanel,rm);
+            solutionsPanel.revalidate();
+            solutionsPanel.repaint();
+		});
 
 		btnGenerate.addActionListener(e -> matrixController.generateSolutions());
 
 		comboBox.addItemListener(e -> {
-		    matrixController.getDrawer().resetMatrixColors();
+			visualizer.setMatrixLabel(labels);
+			visualizer.resetMatrixColors();
 		    int index = comboBox.getSelectedIndex();
-		    List<Solution> solutions = matrixController.getBruteForceController().getSolutions();
+		    List<Solution> solutions = bfController.getBruteForceController().getSolutions();
 		    matrixController.getDrawer().showSolutionPath(solutions.get(index));
 		});
 
 	}
+	
+	public void loadMatrix(int [][] matrix) {
+        try {
+        	solutionsPanel.removeAll();
+        	
+            if (matrix == null) {
+                JOptionPane.showMessageDialog(null, "No se pudo cargar la matriz del archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            labels = new JLabel[matrix.length][matrix[0].length];
+            solutionsPanel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
+            comboBox.setEnabled(false);
+            btnGenerate.setEnabled(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(solutionsPanel, "Insertar valores válidos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+	
+	   public void generateSolutions() {
+
+	        //tController = new TimerController();
+
+	        solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, tController);
+	        solutionHandler.execute();
+	    }
+
 }
