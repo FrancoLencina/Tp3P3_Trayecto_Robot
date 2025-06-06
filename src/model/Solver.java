@@ -7,6 +7,7 @@ public class Solver {
 
     private int _n; //ancho
     private int _m; //alto
+    private int _cant =0; //Cantidad de caminos recorridos
     private Solution _actual;
     private List<Solution> _solutions;
     private int[][] _matrix;
@@ -19,7 +20,8 @@ public class Solver {
         _m = matrix.length;
         _remainingSteps = _n + _m - 2;
     }
-public void solve(){
+    
+    public void solve(){
         _solutions = new ArrayList<Solution>();
         _actual = new Solution();
         _actual.addStep(0, 0, _matrix[0][0]);
@@ -29,14 +31,16 @@ public void solve(){
     public void generateFrom(int row, int col, Solution sol){
         if(sol.getCharge() == 0 && _remainingSteps == 0) {
             _solutions.add(sol.clone());
+            _cant++;
             return;
         }
-
+        
+        boolean move =false;
 
         if (Math.abs(sol.getCharge()) <= _remainingSteps || !_backtracking) {
 
             if (row+1 < _m ) {
-
+            	move= true;
                 sol.addStep(col, row + 1, _matrix[row + 1][col]);
                 _remainingSteps-=1;
                 generateFrom(row + 1, col, sol);
@@ -45,7 +49,7 @@ public void solve(){
             }
 
             if (col+1 < _n) {
-
+            	move=true;
                 sol.addStep(col + 1, row, _matrix[row][col + 1]);
                 _remainingSteps-=1;
                 generateFrom(row, col + 1, sol);
@@ -53,6 +57,11 @@ public void solve(){
                 _remainingSteps+=1;
             }
         }
+        
+        if(move) {
+        	_cant++;
+        }
+        
     }
 
     public int solutionsSize(){

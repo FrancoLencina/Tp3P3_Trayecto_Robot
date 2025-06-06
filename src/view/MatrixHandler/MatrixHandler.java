@@ -1,10 +1,15 @@
-package controllers;
+package view.MatrixHandler;
 
 import java.awt.GridLayout;
 import javax.swing.*;
+
+import controllers.BruteForceController;
+import controllers.RandomController;
+import controllers.ReaderController;
+import controllers.TimerController;
 import view.*;
 
-public class MatrixController {
+public class MatrixHandler {
 
 	private JPanel solutionsPanel;
     private JTextField txtRoute;
@@ -21,7 +26,7 @@ public class MatrixController {
     private SolutionEventHandler solutionHandler;
     private JLabel[][] labels;
 
-    public MatrixController(JPanel solutionsPanel, JTextField txtRoute,
+    public MatrixHandler(JPanel solutionsPanel, JTextField txtRoute,
                             JTextField txtWithoutPruning, JTextField txtWithPruning,
                             JButton btnGenerate, JComboBox<String> comboBox,
                             JProgressBar progressBar,

@@ -8,6 +8,7 @@ import javax.swing.border.SoftBevelBorder;
 import controllers.*;
 import fileReader.FileChooser;
 import model.Solution;
+import view.MatrixHandler.MatrixHandler;
 
 public class View extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -20,11 +21,12 @@ public class View extends JFrame{
 	private JButton btnRandomMatrix;
     private JComboBox<String> comboBox;
     private JProgressBar progressBar;
+    private JTable table;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
 	private PropMaker maker = new PropMaker();
 	private FileChooser chooser = new FileChooser();
-	private MatrixController matrixController;
+	private MatrixHandler matrixController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
 
@@ -33,7 +35,7 @@ public class View extends JFrame{
 		createPanels();
 		addPanelsToFrame();
 		
-		matrixController = new MatrixController(solutionsPanel, txtRoute, txtWithoutPruning,
+		matrixController = new MatrixHandler(solutionsPanel, txtRoute, txtWithoutPruning,
 				txtWithPruning, btnGenerate, comboBox, progressBar, rController, randController);
 		
         setUpListeners();
@@ -68,7 +70,7 @@ public class View extends JFrame{
 	
 	private void addLabelsToOptionsPanel() {
 		optionsPanel.add(maker.createLabel(10, 10, 183, 30, "Ingresa ruta del archivo:"));
-		optionsPanel.add(maker.createLabel(10, 240, 106, 20, "Soluciones:"));
+		optionsPanel.add(maker.createLabel(10, 185, 106, 20, "Soluciones:"));
 		optionsPanel.add(maker.createLabel(10, 333, 100, 20, "Sin poda:"));
 		optionsPanel.add(maker.createLabel(194, 333, 100, 20, "Con poda:"));
 		optionsPanel.add(maker.createLabel(10, 307, 100, 20, "Tiempo total:"));
@@ -76,6 +78,10 @@ public class View extends JFrame{
 	
 	private void addTextFieldsToOptionsPanel() {
 		optionsPanel.add(txtRoute = maker.createTextField(10, 35, 200, 25, ""));
+		table = new JTable();
+		table.setBounds(60, 260, 200, 150);
+		optionsPanel.add(table);
+		table.setVisible(false);
 		optionsPanel.add(txtWithoutPruning = maker.createTextField(10, 356, 110, 25, null));
 		optionsPanel.add(txtWithPruning = maker.createTextField(194, 356, 110, 25, null));
 
@@ -87,16 +93,16 @@ public class View extends JFrame{
 	}
 	
 	private void addButtonsToOptionsPanel() {
-		optionsPanel.add(btnGenerate = maker.createButton(70, 130, 160, 30, "Generar Soluciones"));
+		optionsPanel.add(btnGenerate = maker.createButton(70, 105, 160, 30, "Generar Soluciones"));
 		btnGenerate.setEnabled(false);
 		optionsPanel.add(btnLoad = maker.createButton(215, 35, 80, 25, "Cargar"));
 		optionsPanel.add(btnRandomMatrix = maker.createButton(60, 70, 180, 25, "Cargar Matriz Aleatoria"));
 	}
 	
 	private void addMiscToOptionsPanel() {
-		optionsPanel.add(comboBox = maker.createStringComboBox(10, 265, 199, 25));
+		optionsPanel.add(comboBox = maker.createStringComboBox(10, 210, 199, 25));
 		comboBox.setEnabled(false);
-		optionsPanel.add(progressBar = maker.createProgressBar(10, 180, 280, 30));
+		optionsPanel.add(progressBar = maker.createProgressBar(10, 145, 280, 30));
 	}
 
 	private void setUpListeners() {

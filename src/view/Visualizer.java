@@ -62,6 +62,7 @@ public class Visualizer {
 	void showTime(double time1, double time2) {
 		String time1String = Double.toString(time1);
 		String time2String = Double.toString(time2);
+		//ACA se SETEA 
 		time1Text.setText(time1String);
 		time2Text.setText(time2String);
 		time1Text.setVisible(true);

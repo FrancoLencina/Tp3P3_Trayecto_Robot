@@ -62,6 +62,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		double timeWith= timerController.getPruningTime(bfc.getMatrix());
 		System.out.println("Tiempo sin poda: " + timeWithout);
 		System.out.println("Tiempo con poda: " + timeWith);
+		//ACA IRIA ALGO DE TABLA
 		drawer.showTime(timeWithout, timeWith);
 	}
 }
