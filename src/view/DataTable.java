@@ -15,12 +15,14 @@ public class DataTable extends JPanel{
 				{"Tamaño de matriz",""},
 				{"Tiempo sin poda", ""},
 				{"Tiempo con poda",""},
-				{"Caminos recorridos",""}
+				{"Caminos recorridos sin poda",""},
+				{"Caminos recorridos con poda",""}
 		};
 	
-		JTable table= new JTable(datos,colum);
+		table= new JTable(datos,colum);
 		table.setEnabled(false);
 		table.setRowHeight(25);
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.setFont(new Font("Tahoma", Font.BOLD, 11));
 		table.setShowGrid(false);
 		table.setTableHeader(null);
@@ -30,7 +32,8 @@ public class DataTable extends JPanel{
         add(panelData, BorderLayout.CENTER);
 	}
 	
-	public void actualizarValor(int fila, String nuevoValor) {
+	public void updateValue(int fila, String nuevoValor) {
 		table.setValueAt(nuevoValor, fila, 1);
 	}
+
 }
