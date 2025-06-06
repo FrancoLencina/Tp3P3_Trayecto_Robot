@@ -94,6 +94,8 @@ public class Solver {
 		_backtracking = state;
 	}
 
-
+	public int get_cant() {
+		return _cant;
+	}
 
 }

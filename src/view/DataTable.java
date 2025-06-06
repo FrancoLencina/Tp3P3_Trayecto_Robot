@@ -1,14 +1,11 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
-public class DataTable extends JTable{
+public class DataTable extends JPanel{
 	private static final long serialVersionUID = 1L;
+	private JTable table;
 
 	public DataTable() {
 		setLayout(new BorderLayout());
@@ -33,4 +30,7 @@ public class DataTable extends JTable{
         add(panelData, BorderLayout.CENTER);
 	}
 	
+	public void actualizarValor(int fila, String nuevoValor) {
+		table.setValueAt(nuevoValor, fila, 1);
+	}
 }

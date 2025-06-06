@@ -28,4 +28,8 @@ public class BruteForceController {
 	public int[][] getMatrix(){
 		return s.get_matrix();
 	}
+	
+	public int get_cant() {
+		return s.get_cant();
+	}
 }
