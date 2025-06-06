@@ -1,4 +1,4 @@
-package model;
+package model.randomMatrixGeneration;
 
 public class MatrixBuilder {
 
@@ -26,11 +26,11 @@ public class MatrixBuilder {
 		return matrix;
 	}
 
-	int generateSize() {
+	public int generateSize() {
 		return _random.nextInt(_origin, _bound);
 	}
 
-	boolean verifyCompatible(int row, int col) {
+	public boolean verifyCompatible(int row, int col) {
 		
 		if((row + col) % 2 == 1) {
 			return true;
@@ -49,7 +49,7 @@ public class MatrixBuilder {
 		return matrix;
 	}
 	
-	int defineCharge() {
+	public int defineCharge() {
 		boolean positiveCharge = _random.nextBoolean();
 		if(positiveCharge) {
 			return 1;

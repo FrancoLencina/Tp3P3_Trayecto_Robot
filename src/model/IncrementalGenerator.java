@@ -1,5 +1,7 @@
 package model;
 
+import model.randomMatrixGeneration.Generator;
+
 public class IncrementalGenerator implements Generator {
 
 

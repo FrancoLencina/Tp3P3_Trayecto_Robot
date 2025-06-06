@@ -1,8 +1,11 @@
-package model;
+package model.junitTest;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import model.PruningSolver;
+import model.Solver;
 
 public class PruningSolverTest {
 	

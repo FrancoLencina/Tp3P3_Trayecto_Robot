@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import controllers.*;
+import fileReader.FileChooser;
 import model.Solution;
 
 public class View extends JFrame{

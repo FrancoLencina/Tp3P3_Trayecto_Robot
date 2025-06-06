@@ -1,4 +1,4 @@
-package view;
+package fileReader;
 
 import java.io.File;
 

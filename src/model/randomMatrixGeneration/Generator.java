@@ -1,4 +1,4 @@
-package model;
+package model.randomMatrixGeneration;
 
 public interface Generator {
 	boolean nextBoolean();

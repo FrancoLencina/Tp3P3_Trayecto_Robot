@@ -1,4 +1,4 @@
-package model;
+package model.randomMatrixGeneration;
 import java.util.Random;
 
 public class RandomGenerator implements Generator {
