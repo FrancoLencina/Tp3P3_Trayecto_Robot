@@ -24,7 +24,6 @@ public void solve(){
         _actual = new Solution();
         _actual.addStep(0, 0, _matrix[0][0]);
         generateFrom(0, 0, _actual);
-        System.out.println("Soluciones encontradas:" + solutionsSize());
     }
 
     public void generateFrom(int row, int col, Solution sol){

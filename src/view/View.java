@@ -21,14 +21,9 @@ public class View extends JFrame{
     private JProgressBar progressBar;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
-	private JLabel[][] labels;
-	
 	private PropMaker maker = new PropMaker();
 	private FileChooser chooser = new FileChooser();
-	private Visualizer drawer;
-	private SolutionEventHandler solutionHandler = null;
-	private BruteForceController bfController;
-	private TimerController tController;
+	private MatrixController matrixController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
 
@@ -36,6 +31,10 @@ public class View extends JFrame{
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
+		
+		matrixController = new MatrixController(solutionsPanel, txtRoute, txtWithoutPruning,
+				txtWithPruning, btnGenerate, comboBox, progressBar, rController, randController);
+		
         setUpListeners();
 	}
 
@@ -100,80 +99,21 @@ public class View extends JFrame{
 	}
 
 	private void setUpListeners() {
-		btnLoad.addActionListener(e-> { chooser.fileSelector(txtRoute, this); loadMatrix(); });
-		
-		btnGenerate.addActionListener(e -> { generateSolutions(); });
-		
-		btnRandomMatrix.addActionListener(e->{ loadRandomMatrix(); });
-		
-		comboBox.addItemListener(e -> {
-			drawer.resetMatrixColors();
-			int index = comboBox.getSelectedIndex();
-			List<Solution> solutions = bfController.getSolutions();
-			drawer.showSolutionPath(solutions.get(index));
+		btnLoad.addActionListener(e -> {
+		    chooser.fileSelector(txtRoute, this);
+		    matrixController.loadMatrix();
 		});
-	}
 
-	private void loadMatrix() {
-		try {
-			solutionsPanel.removeAll();
-			if (drawer!=null)
-				drawer.hideTime();
-			String route = txtRoute.getText();
-			if (route==null || route.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "No se ha seleccionada ningun archivo", "Aviso", JOptionPane.WARNING_MESSAGE);			
-				return;
-			}
-			rController.readFile(route);
-			if (rController.getMatrix()==null) {
-				JOptionPane.showMessageDialog(null, "No se pudo cargar la matriz del archivo", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			bfController = new BruteForceController(rController.getMatrix());
-			int[] attributes = rController.getMatrixAttributes();
-			labels= new JLabel[attributes[0]][attributes[1]];
-			solutionsPanel.setLayout(new GridLayout(attributes[0], attributes[1], 3, 3));
-			drawer = new Visualizer(labels, txtWithoutPruning, txtWithPruning);
-			drawer.drawMatrix(solutionsPanel, rController.getMatrix());
-			solutionsPanel.revalidate();
-			solutionsPanel.repaint();
-			comboBox.setEnabled(false);
-			btnGenerate.setEnabled(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-	
-	}
-	
-	private void generateSolutions() {
-		drawer.resetMatrixColors();
-		tController= new TimerController();
-		solutionHandler = new SolutionEventHandler(bfController, progressBar, comboBox, drawer, 
-				tController);
-		solutionHandler.execute();
-	}
-	
-	private void loadRandomMatrix() {
-		try {
-			solutionsPanel.removeAll();
-			if (drawer!=null)
-				drawer.hideTime();
-			int[][] matrix = randController.getMatrix();
-			bfController = new BruteForceController(matrix);
-			labels= new JLabel[matrix.length][matrix[0].length];
-			solutionsPanel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
-			drawer = new Visualizer(labels, txtWithoutPruning, txtWithPruning);
-			drawer.drawMatrix(solutionsPanel, matrix);
-			solutionsPanel.revalidate();
-			solutionsPanel.repaint();
-			comboBox.setEnabled(false);
-			btnGenerate.setEnabled(true);
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(optionsPanel, "Insertar valores validos por favor", "ERROR", JOptionPane.ERROR_MESSAGE);
-		}
+		btnRandomMatrix.addActionListener(e -> matrixController.loadRandomMatrix());
+
+		btnGenerate.addActionListener(e -> matrixController.generateSolutions());
+
+		comboBox.addItemListener(e -> {
+		    matrixController.getDrawer().resetMatrixColors();
+		    int index = comboBox.getSelectedIndex();
+		    List<Solution> solutions = matrixController.getBruteForceController().getSolutions();
+		    matrixController.getDrawer().showSolutionPath(solutions.get(index));
+		});
+
 	}
 }

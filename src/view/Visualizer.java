@@ -22,7 +22,7 @@ public class Visualizer {
 		this.time2Text = textField2;
 	}
 
-	void drawMatrix(JPanel panel, int[][] matrix) {
+	public void drawMatrix(JPanel panel, int[][] matrix) {
 		panel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
 		for (int i = 0; i< matrix.length; i++) {
 			for (int j = 0; j< matrix[0].length; j++) {
@@ -51,7 +51,7 @@ public class Visualizer {
 		}
 	}
 	
-	void resetMatrixColors() {
+	public void resetMatrixColors() {
 		for (int i = 0; i< matrixVisuals.length; i++) {
 			for (int j = 0; j< matrixVisuals[0].length; j++) {
 				matrixVisuals[i][j].setBackground(Color.WHITE);
@@ -68,7 +68,7 @@ public class Visualizer {
 		time2Text.setVisible(true);
 	}
 	
-	void hideTime() {
+	public void hideTime() {
 		time1Text.setVisible(false);
 		time2Text.setVisible(false);
 	}
