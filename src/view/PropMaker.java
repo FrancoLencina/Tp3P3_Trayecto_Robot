@@ -45,4 +45,10 @@ public class PropMaker {
 		return comboBox;
 	}
 	
+	public DataTable createDataTable(int x, int y, int width, int height) {
+		DataTable table = new DataTable();
+		table.setBounds(x, y, width, height);
+		return table;
+	}
+	
 }
