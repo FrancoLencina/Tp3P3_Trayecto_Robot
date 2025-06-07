@@ -30,6 +30,9 @@ public class FileChooser {
 		}
 	}
 	public String getRoute() {
-		return route;
+		if(route!=null && !route.isEmpty()) {
+			return route;
+		}
+		return null;
 	}
 }

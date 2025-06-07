@@ -15,6 +15,12 @@ public class Solver {
     private boolean _backtracking;
 
     public Solver(int [][] matrix) {
+    	if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            throw new IllegalArgumentException("La matriz no puede ser nula o vacía.");
+        }
+    	if (matrix.length== matrix[0].length) {
+    		throw new IllegalArgumentException("La matriz no puede ser cuadrada.");
+    	}
         _matrix = matrix;
         _n = matrix[0].length;
         _m = matrix.length;

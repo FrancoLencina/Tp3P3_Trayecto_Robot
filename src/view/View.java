@@ -22,7 +22,7 @@ public class View extends JFrame{
     private JPanel optionsPanel;
 	private PropMaker maker = new PropMaker();
 	private FileChooser chooser = new FileChooser();
-	private Visualizer visualizer = new Visualizer();
+	private SolutionVisualizer visualizer;
 	private BruteForceController bfController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
@@ -33,6 +33,7 @@ public class View extends JFrame{
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
+		visualizer = new SolutionVisualizer(progressBar, table);
         setUpListeners();
 	}
 
@@ -92,6 +93,8 @@ public class View extends JFrame{
 	private void setUpListeners() {
 		btnLoad.addActionListener(e -> {
 		    chooser.fileSelector(txtRoute, this);
+		    if(FileVerification.loadMatrixFromFile(this, chooser, rController) == null)
+		    	return;
 		    rController.readFile(chooser.getRoute());
 		    loadMatrix(rController.getMatrix());
 		    bfController = new BruteForceController(rController.getMatrix());
@@ -144,6 +147,10 @@ public class View extends JFrame{
     }
 	
 	   public void generateSolutions() {
+		   if (solutionHandler != null && solutionHandler.getRunning()) {
+			   JOptionPane.showMessageDialog(this, "Ya hay una generación en proceso.", "Proceso en curso", JOptionPane.WARNING_MESSAGE);
+		        return;
+		   }
 		   
 		   visualizer.setDataTable(table);
 	        solutionHandler = new SolutionEventHandler(bfController, visualizer, progressBar, comboBox, tController);

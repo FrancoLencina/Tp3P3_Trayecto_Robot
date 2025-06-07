@@ -12,16 +12,17 @@ public class JsonReader {
 		this.matrix = null;
 	}
 	
-	public void readFile(String route) {
+	public boolean readFile(String route) {
 		Gson gson = new Gson();
-		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(route));
 			matrix = gson.fromJson(br, int[][].class);
+			return matrix !=null;
 		} catch (Exception e) {
 			e.printStackTrace();
+			matrix = null;
+			return false;
 		}
-		
 	}
 	
 	public int[][] getMatrix(){
@@ -29,6 +30,9 @@ public class JsonReader {
 	}
 	
 	public int[] getMatrixAttributes(){
+		if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return null;
+        }
 		int[] attributes = new int[2];
 		attributes[0] = matrix.length;
 		attributes[1] = matrix[0].length;

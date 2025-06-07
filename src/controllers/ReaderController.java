@@ -5,8 +5,8 @@ public class ReaderController {
 	
 	private JsonReader jr = new JsonReader();
 	
-	public void readFile(String route) {
-		jr.readFile(route);
+	public boolean readFile(String route) {
+		return jr.readFile(route);
 	}
 	
 	public int[] getMatrixAttributes() {

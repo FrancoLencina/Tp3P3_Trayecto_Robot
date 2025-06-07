@@ -1,20 +1,20 @@
 package view;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.swing.*;
-import controllers.BruteForceController;
-import controllers.TimerController;
+import controllers.*;
 
 public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
+	private boolean running = false;
 	private TimerController timerController;
 	private BruteForceController bfc;
-	private Visualizer visualizer;
+	private SolutionVisualizer visualizer;
 	private JComboBox<String> solutionsOutput;
 	private JProgressBar progressBar;
 	
-	public SolutionEventHandler(BruteForceController controller, Visualizer visuals, JProgressBar bar, JComboBox<String> box,
+	
+	public SolutionEventHandler(BruteForceController controller, SolutionVisualizer visuals, JProgressBar bar, JComboBox<String> box,
 			TimerController timerController) {
 		this.bfc = controller;
 		this.progressBar=bar;
@@ -23,16 +23,22 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		this.timerController = timerController;
 	}
 	
+	
 	@Override
 	protected Boolean doInBackground() {
+		running = true;
 		progressBar.setIndeterminate(true);
 		bfc.solve();
 		System.out.println(bfc.getAmountOfSolutions());
 		return true;
 	}
 	
+	
+
+
 	@Override
 	public void done() {
+		running = false;
 		try {
 			if (!this.isCancelled()) {
 				if (bfc.getAmountOfSolutions()!=0) {
@@ -53,6 +59,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		}
 	}
 
+	
 	private void setupDataTable() {
 		Map<Integer, String> data = new HashMap<Integer, String>();
 		int[][] matrix = bfc.getMatrix();
@@ -62,12 +69,15 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		data.put(2, timeWithoutBacktrack);
 		String timeWithBacktrack = Double.toString(timerController.getPruningTime(bfc.getMatrix()));
 		data.put(3, timeWithBacktrack);
-		String generatedPrunningPaths = Integer.toString(bfc.getPrunningCant());
-		data.put(5, generatedPrunningPaths);
 		String generatedBruteaths = Integer.toString(bfc.getBruteCant());
 		data.put(4, generatedBruteaths);
-		System.out.println("Caminos prunning - " + generatedPrunningPaths);
-		System.out.println("Caminos brute - " + generatedBruteaths);
+		String generatedPrunningPaths = Integer.toString(bfc.getPrunningCant());
+		data.put(5, generatedPrunningPaths);
 		visualizer.displayDataTable(data);
 	}
+	
+	public boolean getRunning() {
+		return running;
+	}
 }
+
