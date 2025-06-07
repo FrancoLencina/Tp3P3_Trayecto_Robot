@@ -11,23 +11,22 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	private BruteForceController bfc;
 	private SolutionVisualizer visualizer;
 	private JComboBox<String> solutionsOutput;
-	private JProgressBar progressBar;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, SolutionVisualizer visuals, JProgressBar bar, JComboBox<String> box,
-			TimerController timerController) {
+	public SolutionEventHandler(BruteForceController controller, SolutionVisualizer visuals, JComboBox<String> box) {
 		this.bfc = controller;
-		this.progressBar=bar;
 		this.solutionsOutput = box;
 		this.visualizer = visuals;
-		this.timerController = timerController;
+		this.timerController = new TimerController(bfc.getMatrix());
 	}
 	
 	
 	@Override
 	protected Boolean doInBackground() {
 		running = true;
-		progressBar.setIndeterminate(true);
+		System.out.println(running);
+		visualizer.setProgressBarIndeterminate();
+		timerController.run();
 		bfc.solve();
 		System.out.println(bfc.getAmountOfSolutions());
 		return true;
@@ -51,7 +50,8 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					solutionsOutput.setEnabled(true);
 					visualizer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
 					setupDataTable();
-					progressBar.setIndeterminate(false);
+					visualizer.stopProgressBar();
+					System.out.println(running);
 				}
 			}
 		} catch (Exception ex) {
@@ -59,15 +59,15 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		}
 	}
 
-	
+//	
 	private void setupDataTable() {
 		Map<Integer, String> data = new HashMap<Integer, String>();
 		int[][] matrix = bfc.getMatrix();
 		String matrixAttributes = "Matriz " + matrix[0].length + "x" + matrix.length;
 		data.put(1, matrixAttributes);
-		String timeWithoutBacktrack = Double.toString(timerController.getBruteForceTime(bfc.getMatrix()));
+		String timeWithoutBacktrack = Double.toString(timerController.getBruteForceTime());
 		data.put(2, timeWithoutBacktrack);
-		String timeWithBacktrack = Double.toString(timerController.getPruningTime(bfc.getMatrix()));
+		String timeWithBacktrack = Double.toString(timerController.getPruningTime());
 		data.put(3, timeWithBacktrack);
 		String generatedBruteaths = Integer.toString(bfc.getBruteCant());
 		data.put(4, generatedBruteaths);
@@ -76,7 +76,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		visualizer.displayDataTable(data);
 	}
 	
-	public boolean getRunning() {
+	public boolean isRunning() {
 		return running;
 	}
 }

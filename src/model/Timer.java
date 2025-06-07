@@ -1,8 +1,11 @@
 package model;
 
 public class Timer {
+	
+	private double bruteForceTime;
+	private double pruningTime;
 
-	public double getBruteForceTime(int [][]matrix) {
+	public void doBruteForceTime(int [][]matrix) {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i<500;i++) {
 			Solver s = new Solver(matrix);
@@ -10,10 +13,10 @@ public class Timer {
 			s.solve();
 		}
 		long finish = System.currentTimeMillis();
-		return (finish - start) / 1000.0;
+		bruteForceTime = (finish - start) / 1000.0;
 	}
 	
-	public double getPruningTime(int [][]matrix) {
+	public void doPruningTime(int [][]matrix) {
 		long start = System.currentTimeMillis();
 		for (int i = 0;i<500;i++) {
 			Solver s = new Solver(matrix);
@@ -21,7 +24,15 @@ public class Timer {
 			s.solve();
 		}
 		long finish = System.currentTimeMillis();
-		return (finish - start) / 1000.0;
+		pruningTime = (finish - start) / 1000.0;
+	}
+	
+	public double getBruteForceTime() {
+		return bruteForceTime;
+	}
+
+	public double getPruningTime() {
+		return pruningTime;
 	}
 	
 }

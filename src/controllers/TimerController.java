@@ -2,20 +2,27 @@ package controllers;
 
 import model.Timer;
 
-public class TimerController {
-	
+public class TimerController extends Thread {
+
+	private int[][] matrix;
 	private Timer timer;
 	
-	public TimerController() {
-        this.timer = new Timer();
-    }
-	
-	public double getBruteForceTime(int [][]matrix) {
-		return timer.getBruteForceTime(matrix);
+	public TimerController(int[][] matrix) {
+		this.matrix=matrix;
+		timer = new Timer();
 	}
 	
-	public double getPruningTime(int [][]matrix) {
-		return timer.getPruningTime(matrix);
+	@Override
+	public void run() {
+		timer.doBruteForceTime(matrix);
+		timer.doPruningTime(matrix);
 	}
 	
+	public double getBruteForceTime() {
+		return timer.getBruteForceTime();
+	}
+	
+	public double getPruningTime() {
+		return timer.getPruningTime();
+	}
 }

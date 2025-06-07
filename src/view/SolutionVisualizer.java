@@ -16,10 +16,10 @@ public class SolutionVisualizer {
 	
 	private JLabel[][] matrixVisuals;
 	private DataTable dataDisplay;
-	private JProgressBar progressBar;
+	private JProgressBar solutionProgressVisualizer;
 
 	public SolutionVisualizer(JProgressBar progressBar, DataTable table) {
-		this.progressBar=progressBar;
+		this.solutionProgressVisualizer=progressBar;
 		this.dataDisplay=table;
 	}
 	
@@ -72,8 +72,11 @@ public class SolutionVisualizer {
 	public void setMatrixLabel(JLabel[][] labels) {
 		matrixVisuals = labels;
 	}
-
-	public void setDataTable(DataTable table) {
-		dataDisplay = table;
+	
+	public void setProgressBarIndeterminate() {
+		solutionProgressVisualizer.setIndeterminate(true);
+	}
+	public void stopProgressBar() {
+		solutionProgressVisualizer.setIndeterminate(false);
 	}
 }

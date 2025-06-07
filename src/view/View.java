@@ -26,7 +26,6 @@ public class View extends JFrame{
 	private BruteForceController bfController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
-	private TimerController tController = new TimerController();
 	private SolutionEventHandler solutionHandler = null;
 
 	public View() {
@@ -92,26 +91,36 @@ public class View extends JFrame{
 
 	private void setUpListeners() {
 		btnLoad.addActionListener(e -> {
-		    chooser.fileSelector(txtRoute, this);
-		    if(FileVerification.loadMatrixFromFile(this, chooser, rController) == null)
-		    	return;
-		    rController.readFile(chooser.getRoute());
-		    loadMatrix(rController.getMatrix());
-		    bfController = new BruteForceController(rController.getMatrix());
-			visualizer.setMatrixLabel(labels);
-		    visualizer.drawMatrix(solutionsPanel,rController.getMatrix());
-		    solutionsPanel.revalidate();
-		    solutionsPanel.repaint();
+			if (!isSolutionHandlerRunning()) {
+				chooser.fileSelector(txtRoute, this);
+			    if(FileVerification.loadMatrixFromFile(this, chooser, rController) == null)
+			    	return;
+			    rController.readFile(chooser.getRoute());
+			    loadMatrix(rController.getMatrix());
+			    bfController = new BruteForceController(rController.getMatrix());
+				visualizer.setMatrixLabel(labels);
+			    visualizer.drawMatrix(solutionsPanel,rController.getMatrix());
+			    solutionsPanel.revalidate();
+			    solutionsPanel.repaint();
+			} else {
+				JOptionPane.showMessageDialog(this, "Ya hay una generación en proceso.", "Proceso en curso", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 		});
 
 		 btnRandomMatrix.addActionListener(e -> {
-            int[][] rm = randController.getMatrix();
-            loadMatrix(rm);
-            bfController = new BruteForceController(rm);
-			visualizer.setMatrixLabel(labels);
-            visualizer.drawMatrix(solutionsPanel,rm);
-            solutionsPanel.revalidate();
-            solutionsPanel.repaint();
+			if (!isSolutionHandlerRunning()){
+				int[][] rm = randController.getMatrix();
+	            loadMatrix(rm);
+	            bfController = new BruteForceController(rm);
+				visualizer.setMatrixLabel(labels);
+	            visualizer.drawMatrix(solutionsPanel,rm);
+	            solutionsPanel.revalidate();
+	            solutionsPanel.repaint();
+		 	} else {
+		 		JOptionPane.showMessageDialog(this, "Ya hay una generación en proceso.", "Proceso en curso", JOptionPane.WARNING_MESSAGE);
+				return;
+		 	}
 		});
 
 		btnGenerate.addActionListener(e -> generateSolutions());
@@ -130,11 +139,12 @@ public class View extends JFrame{
         try {
         	solutionsPanel.removeAll();
         	
+        	
             if (matrix == null) {
                 JOptionPane.showMessageDialog(null, "No se pudo cargar la matriz del archivo", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+            table.setVisible(false);
             labels = new JLabel[matrix.length][matrix[0].length];
             solutionsPanel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
             comboBox.setEnabled(false);
@@ -147,14 +157,18 @@ public class View extends JFrame{
     }
 	
 	   public void generateSolutions() {
-		   if (solutionHandler != null && solutionHandler.getRunning()) {
-			   JOptionPane.showMessageDialog(this, "Ya hay una generación en proceso.", "Proceso en curso", JOptionPane.WARNING_MESSAGE);
-		        return;
-		   }
-		   
-		   visualizer.setDataTable(table);
-	        solutionHandler = new SolutionEventHandler(bfController, visualizer, progressBar, comboBox, tController);
-	        solutionHandler.execute();
+		    if(!isSolutionHandlerRunning()) {
+		    	solutionHandler = new SolutionEventHandler(bfController, visualizer, comboBox);
+		        solutionHandler.execute();
+		    }
+		    btnGenerate.setEnabled(false);
 	    }
+	   
+	   private boolean isSolutionHandlerRunning() {
+		   if (solutionHandler != null && solutionHandler.isRunning()) {
+		       return true;
+		   }
+		   return false;
+	   }
 
 }
