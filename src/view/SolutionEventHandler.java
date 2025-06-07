@@ -24,7 +24,6 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	@Override
 	protected Boolean doInBackground() {
 		running = true;
-		System.out.println(running);
 		visualizer.setProgressBarIndeterminate();
 		timerController.run();
 		bfc.solve();
@@ -37,8 +36,8 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 
 	@Override
 	public void done() {
-		running = false;
 		try {
+			running = false;
 			if (!this.isCancelled()) {
 				if (bfc.getAmountOfSolutions()!=0) {
 					String[] solutions = new String[bfc.getAmountOfSolutions()];
@@ -49,10 +48,9 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					solutionsOutput.setModel(new DefaultComboBoxModel<>(solutions));
 					solutionsOutput.setEnabled(true);
 					visualizer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
-					setupDataTable();
-					visualizer.stopProgressBar();
-					System.out.println(running);
 				}
+				setupDataTable();
+				visualizer.stopProgressBar();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
