@@ -70,9 +70,11 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		String timeWithBacktrack = Double.toString(timerController.getPruningTime(bfc.getMatrix()));
 		data.put(3, timeWithBacktrack);
 		String generatedPrunningPaths = Integer.toString(bfc.getPrunningCant());
-		data.put(4, generatedPrunningPaths);
-		String generatedBruteaths = Integer.toString(bfc.getPrunningCant());
-		data.put(5, generatedBruteaths);
+		data.put(5, generatedPrunningPaths);
+		String generatedBruteaths = Integer.toString(bfc.getBruteCant());
+		data.put(4, generatedBruteaths);
+		System.out.println("Caminos prunning - " + generatedPrunningPaths);
+		System.out.println("Caminos brute - " + generatedBruteaths);
 		visualizer.displayDataTable(data);
 	}
 }
