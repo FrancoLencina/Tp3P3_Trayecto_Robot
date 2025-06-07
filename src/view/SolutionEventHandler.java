@@ -1,5 +1,8 @@
 package view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.*;
 import controllers.BruteForceController;
 import controllers.TimerController;
@@ -10,11 +13,13 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	private BruteForceController bfc;
 	private Visualizer visualizer;
 	private JComboBox<String> solutionsOutput;
+	private JProgressBar progressBar;
 	
 	
-	public SolutionEventHandler(BruteForceController controller, Visualizer visuals,JComboBox<String> box,
+	public SolutionEventHandler(BruteForceController controller, Visualizer visuals, JProgressBar bar, JComboBox<String> box,
 			TimerController timerController) {
 		this.bfc = controller;
+		this.progressBar=bar;
 		this.solutionsOutput = box;
 		this.visualizer = visuals;
 		this.timerController = timerController;
@@ -23,6 +28,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	
 	@Override
 	protected Boolean doInBackground() {
+		progressBar.setIndeterminate(true);
 		bfc.solve();
 		System.out.println(bfc.getAmountOfSolutions());
 		return true;
@@ -35,7 +41,6 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	public void done() {
 		try {
 			if (!this.isCancelled()) {
-//				timerOnScreen();
 				if (bfc.getAmountOfSolutions()!=0) {
 					String[] solutions = new String[bfc.getAmountOfSolutions()];
 					for (int i = 0; i<solutions.length;i++) {
@@ -45,6 +50,8 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 					solutionsOutput.setModel(new DefaultComboBoxModel<>(solutions));
 					solutionsOutput.setEnabled(true);
 					visualizer.showSolutionPath(bfc.getSolutions().get(0)); //Mostramos la primera solución.
+					setupDataTable();
+					progressBar.setIndeterminate(false);
 				}
 			}
 		} catch (Exception ex) {
@@ -53,13 +60,20 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	}
 
 	
-	private void timerOnScreen() {
-		double timeWithout= timerController.getBruteForceTime(bfc.getMatrix());
-		double timeWith= timerController.getPruningTime(bfc.getMatrix());
-		System.out.println("Tiempo sin poda: " + timeWithout);
-		System.out.println("Tiempo con poda: " + timeWith);
-		//ACA IRIA ALGO DE TABLA
-		visualizer.showTime(timeWithout, timeWith);
+	private void setupDataTable() {
+		Map<Integer, String> data = new HashMap<Integer, String>();
+		int[][] matrix = bfc.getMatrix();
+		String matrixAttributes = "Matriz " + matrix.length + "x" + matrix[0].length;
+		data.put(1, matrixAttributes);
+		String timeWithoutBacktrack = Double.toString(timerController.getBruteForceTime(bfc.getMatrix()));
+		data.put(2, timeWithoutBacktrack);
+		String timeWithBacktrack = Double.toString(timerController.getPruningTime(bfc.getMatrix()));
+		data.put(3, timeWithBacktrack);
+		String generatedPrunningPaths = Integer.toString(bfc.getPrunningCant());
+		data.put(4, generatedPrunningPaths);
+		String generatedBruteaths = Integer.toString(bfc.getPrunningCant());
+		data.put(5, generatedBruteaths);
+		visualizer.displayDataTable(data);
 	}
 }
 

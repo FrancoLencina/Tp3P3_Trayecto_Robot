@@ -17,7 +17,7 @@ public class View extends JFrame{
 	private JButton btnRandomMatrix;
     private JComboBox<String> comboBox;
     private JProgressBar progressBar;
-    private JTable table;
+    private DataTable table;
     private JPanel solutionsPanel;
     private JPanel optionsPanel;
 	private PropMaker maker = new PropMaker();
@@ -66,17 +66,10 @@ public class View extends JFrame{
 	private void addLabelsToOptionsPanel() {
 		optionsPanel.add(maker.createLabel(10, 10, 183, 30, "Ingresa ruta del archivo:"));
 		optionsPanel.add(maker.createLabel(10, 185, 106, 20, "Soluciones:"));
-		optionsPanel.add(maker.createLabel(10, 333, 100, 20, "Sin poda:"));
-		optionsPanel.add(maker.createLabel(194, 333, 100, 20, "Con poda:"));
-		optionsPanel.add(maker.createLabel(10, 307, 100, 20, "Tiempo total:"));
 	}
 	
 	private void addTextFieldsToOptionsPanel() {
 		optionsPanel.add(txtRoute = maker.createTextField(10, 35, 200, 25, ""));
-		table = new JTable();
-		table.setBounds(60, 260, 200, 150);
-		optionsPanel.add(table);
-		table.setVisible(false);
 
 		txtRoute.setEditable(false);
 	}
@@ -91,6 +84,8 @@ public class View extends JFrame{
 	private void addMiscToOptionsPanel() {
 		optionsPanel.add(comboBox = maker.createStringComboBox(10, 210, 199, 25));
 		comboBox.setEnabled(false);
+		optionsPanel.add(table = maker.createDataTable(15, 260, 270, 125));
+		table.setVisible(false);
 		optionsPanel.add(progressBar = maker.createProgressBar(10, 145, 280, 30));
 	}
 
@@ -149,14 +144,10 @@ public class View extends JFrame{
     }
 	
 	   public void generateSolutions() {
-
-	        solutionHandler = new SolutionEventHandler(bfController, visualizer, comboBox, tController);
+		   
+		   visualizer.setDataTable(table);
+	        solutionHandler = new SolutionEventHandler(bfController, visualizer, progressBar, comboBox, tController);
 	        solutionHandler.execute();
-	        progressBar.setIndeterminate(true);
-	        while (!solutionHandler.isDone()) {
-	        	progressBar.setValue(progressBar.getValue()+bfController.get_cant());
-	        }
-	        progressBar.setIndeterminate(false);
 	    }
 
 }

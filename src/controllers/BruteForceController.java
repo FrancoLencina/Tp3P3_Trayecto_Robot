@@ -6,30 +6,38 @@ import model.Solver;
 
 public class BruteForceController {
 
-	private Solver s;
+	private Solver pruningSolver;
+	private Solver bruteSolver;
 	
 	public BruteForceController(int[][] matrix) {
-		s = new Solver(matrix);
+		pruningSolver = new Solver(matrix);
+		pruningSolver.setBacktrackingEnabled(true);
+		bruteSolver = new Solver(matrix);
+		bruteSolver.setBacktrackingEnabled(false);
 	}
 
 	public void solve() {
-		s.setBacktrackingEnabled(true);
-		s.solve();
+		pruningSolver.solve();
+		bruteSolver.solve();
 	}
 	
 	public List<Solution> getSolutions() {
-		return s.get_solutions();
+		return pruningSolver.get_solutions();
 	}
 	
 	public int getAmountOfSolutions() {
-		return s.solutionsSize();
+		return pruningSolver.solutionsSize();
 	}
 	
 	public int[][] getMatrix(){
-		return s.get_matrix();
+		return pruningSolver.get_matrix();
 	}
 	
-	public int get_cant() {
-		return s.get_cant();
+	public int getPrunningCant() {
+		return pruningSolver.get_cant();
 	}
+	
+	public int getBruteCant() {
+		return bruteSolver.get_cant();	
+		}
 }

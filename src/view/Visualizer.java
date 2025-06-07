@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,13 +14,7 @@ import model.Solution;
 public class Visualizer {
 	
 	private JLabel[][] matrixVisuals;
-	private JTextField time1Text; // Tiempo sin poda
-	private JTextField time2Text; // Tiempo con poda
-	
-	public Visualizer() {
-//		this.time1Text = textField1;
-//		this.time2Text = textField2;
-	}
+	private DataTable dataDisplay;
 
 	public void drawMatrix(JPanel panel, int[][] matrix) {
 		panel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
@@ -58,22 +53,20 @@ public class Visualizer {
 		}
 	}
 	
-	void showTime(double time1, double time2) {
-		String time1String = Double.toString(time1);
-		String time2String = Double.toString(time2);
-		//ACA se SETEA 
-		time1Text.setText(time1String);
-		time2Text.setText(time2String);
-		time1Text.setVisible(true);
-		time2Text.setVisible(true);
-	}
-	
-	public void hideTime() {
-		time1Text.setVisible(false);
-		time2Text.setVisible(false);
+	public void displayDataTable(Map<Integer, String> data) {
+		int position = 0;
+		for (String s : data.values()) {
+			dataDisplay.updateValue(position, s);
+			position++;
+		}
+		dataDisplay.setVisible(true);
 	}
 
 	public void setMatrixLabel(JLabel[][] labels) {
 		matrixVisuals = labels;
+	}
+
+	public void setDataTable(DataTable table) {
+		dataDisplay = table;
 	}
 }
