@@ -2,7 +2,6 @@ package view;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.*;
 import controllers.BruteForceController;
 import controllers.TimerController;
@@ -15,7 +14,6 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 	private JComboBox<String> solutionsOutput;
 	private JProgressBar progressBar;
 	
-	
 	public SolutionEventHandler(BruteForceController controller, Visualizer visuals, JProgressBar bar, JComboBox<String> box,
 			TimerController timerController) {
 		this.bfc = controller;
@@ -25,7 +23,6 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		this.timerController = timerController;
 	}
 	
-	
 	@Override
 	protected Boolean doInBackground() {
 		progressBar.setIndeterminate(true);
@@ -34,9 +31,6 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		return true;
 	}
 	
-	
-
-
 	@Override
 	public void done() {
 		try {
@@ -59,11 +53,10 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		}
 	}
 
-	
 	private void setupDataTable() {
 		Map<Integer, String> data = new HashMap<Integer, String>();
 		int[][] matrix = bfc.getMatrix();
-		String matrixAttributes = "Matriz " + matrix.length + "x" + matrix[0].length;
+		String matrixAttributes = "Matriz " + matrix[0].length + "x" + matrix.length;
 		data.put(1, matrixAttributes);
 		String timeWithoutBacktrack = Double.toString(timerController.getBruteForceTime(bfc.getMatrix()));
 		data.put(2, timeWithoutBacktrack);
@@ -78,4 +71,3 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean>{
 		visualizer.displayDataTable(data);
 	}
 }
-
