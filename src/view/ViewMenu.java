@@ -99,9 +99,16 @@ public class ViewMenu extends JFrame {
 		Map<String, Double> without = new HashMap();;
 		for(int[][] matrix : matrixes) {
 			gb = new GraphicBuilder(matrix);
-			with = gb.getResultsWithPruning(matrix);
-			without = gb.getResultsWithoutPruning(matrix);
+			Map<String,Double> resWith=gb.getResultsWithPruning(matrix);
+			Map<String,Double> resWithout=gb.getResultsWithoutPruning(matrix);
+			for(Map.Entry<String, Double> entry : resWith.entrySet()) {
+				with.put(entry.getKey(),entry.getValue());
+			}
+			for(Map.Entry<String, Double> entry : resWithout.entrySet()) {
+				without.put(entry.getKey(),entry.getValue());
+			}
 		}
+		
 		ViewChart graphic = new ViewChart(with, without);
 		graphic.setVisible(true);
 		dispose();
