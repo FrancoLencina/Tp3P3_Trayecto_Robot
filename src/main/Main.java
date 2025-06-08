@@ -1,8 +1,8 @@
- package main;
+package main;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import view.View;
+import view.*;;
 
 public class Main {
 
@@ -35,7 +35,7 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new View();
+		frame = new ViewMenu();
 	}
-	
+
 }
