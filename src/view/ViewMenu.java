@@ -128,7 +128,7 @@ public class ViewMenu extends JFrame {
 			}
 			double timeWithout = timerC.getBruteForceTime();
 			double timeWith = timerC.getPruningTime();
-			String size = matrix.length + "x" + matrix[0].length;
+			String size = matrix[0].length + "x" + matrix.length;
 			resultsWithout.put(size, timeWithout);
 			resultsWith.put(size, timeWith);
 			System.out.println("Tamano" + size);

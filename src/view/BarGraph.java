@@ -3,9 +3,11 @@ package view;
 import java.awt.BorderLayout;
 import java.util.Map;
 import javax.swing.JFrame;
+
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+
 
 public class BarGraph extends JFrame {
 	private static final long serialVersionUID = 1L;
