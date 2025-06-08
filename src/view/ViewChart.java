@@ -9,12 +9,12 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 
-public class BarGraph extends JFrame {
+public class ViewChart extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JFreeChart graph;
 	private DefaultCategoryDataset data;
 
-	public BarGraph(Map<String, Double> resultsWithOut, Map<String, Double> resultsWith) {
+	public ViewChart(Map<String, Double> resultsWith, Map<String, Double> resultsWithOut) {
 		setTitle("Gráfico de tiempos");
 		setBounds(100, 100, 800, 480);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

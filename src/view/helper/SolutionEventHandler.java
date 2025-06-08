@@ -51,7 +51,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean> {
 			ex.printStackTrace();
 		}
 	}
-
+	
 	private void setupDataTable() {
 		Map<Integer, String> data = new HashMap<Integer, String>();
 		int[][] matrix = bfc.getMatrix();

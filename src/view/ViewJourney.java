@@ -8,7 +8,7 @@ import controllers.*;
 import model.Solution;
 import view.helper.*;
 
-public class View extends JFrame {
+public class ViewJourney extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtRoute;
 	private JLabel[][] labels;
@@ -28,7 +28,7 @@ public class View extends JFrame {
 	private RandomController randController = new RandomController();
 	private SolutionEventHandler solutionHandler = null;
 
-	public View() {
+	public ViewJourney() {
 		setUpFrame();
 		createPanels();
 		addPanelsToFrame();
@@ -93,7 +93,7 @@ public class View extends JFrame {
 		btnLoad.addActionListener(e -> {
 			if (!isSolutionHandlerRunning()) {
 				chooser.fileSelector(txtRoute, this);
-				int [][]matrix= FileVerification.loadMatrixFromFile(this, chooser, rController);
+				int [][]matrix= FileVerification.loadMatrixFromFile(chooser, rController);
 				if (matrix == null)
 					return;
 				rController.readFile(chooser.getRoute());

@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import view.helper.FileChooser;
 import view.helper.FileVerification;
+import view.helper.GraphicBuilder;
 import view.helper.PropMaker;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +28,7 @@ public class ViewMenu extends JFrame {
 	private JButton btnGraphicMode;
 	private TimerController timerC;
 	private ReaderController rController = new ReaderController();
+	private GraphicBuilder gb;
 
 	public ViewMenu() {
 		setUpFrame();
@@ -71,7 +73,7 @@ public class ViewMenu extends JFrame {
 
 	private void openRobotMode() {
 		btnRobotMode.addActionListener(e -> {
-			new View().setVisible(true);
+			new ViewJourney().setVisible(true);
 			dispose();
 		});
 	}
@@ -81,63 +83,27 @@ public class ViewMenu extends JFrame {
 				"Por favor, seleccione entre 1 y 5 archivos para la creación del gráfico.\n"
 						+ "Use la tecla Shift y el mouse para seleccionar varios archivos.",
 				"Selección de archivos", JOptionPane.INFORMATION_MESSAGE);
-		List<String> routes = null;
-		do {
-			chooser.fileSelector(this);
-			routes = chooser.getRoutes();
+		chooser.fileSelector(this);
+		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser,rController);
+		if (matrixes == null)
+			return;
 
-			if (routes == null || routes.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "No se seleccionaron archivos.", "Advertencia",
-						JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-
-			if (routes.size() > 5) {
-				JOptionPane.showMessageDialog(this,
-						"Has seleccionado más de 5 archivos. Por favor, selecciona entre 1 y 5.", "Cantidad excedida",
-						JOptionPane.WARNING_MESSAGE);
-			}
-
-		} while (routes.size() > 5);
-
-		Map<String, Double> resultsWithout = new HashMap<>();
-		Map<String, Double> resultsWith = new HashMap<>();
-
-		for (String route : routes) {
-			boolean ready = rController.readFile(route);
-			if (!ready) {
-				JOptionPane.showMessageDialog(this, "No se pudo leer el archivo: " + route, "Error",
-						JOptionPane.ERROR_MESSAGE);
-				continue;
-			}
-			int[][] matrix = rController.getMatrix();
-			if (matrix == null) {
-				JOptionPane.showMessageDialog(this, "Error al obtener la matriz desde: " + route, "Error",
-						JOptionPane.ERROR_MESSAGE);
-				continue;
-			}
-			timerC = new TimerController(matrix);
-			// REVISAR ESTO
-			timerC.start();
-			try {
-				timerC.join(); // Espera a que termine el hilo
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Error al esperar la ejecución del hilo.", "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-			double timeWithout = timerC.getBruteForceTime();
-			double timeWith = timerC.getPruningTime();
-			String size = matrix[0].length + "x" + matrix.length;
-			resultsWithout.put(size, timeWithout);
-			resultsWith.put(size, timeWith);
-			System.out.println("Tamano" + size);
-			System.out.println("segudno sin " + timeWithout);
-			System.out.println("segudno con " + timeWith);
+		if (matrixes.size() > 5 ) {
+			JOptionPane.showMessageDialog(this,
+					"Has seleccionado más de 5 archivos. Por favor, selecciona entre 1 y 5.", "Cantidad excedida",
+					JOptionPane.WARNING_MESSAGE);
+			return;
 		}
-		BarGraph grafico = new BarGraph(resultsWithout, resultsWith);
-		grafico.setVisible(true);
+
+		Map<String, Double> with = new HashMap();
+		Map<String, Double> without = new HashMap();;
+		for(int[][] matrix : matrixes) {
+			gb = new GraphicBuilder(matrix);
+			with = gb.getResultsWithPruning(matrix);
+			without = gb.getResultsWithoutPruning(matrix);
+		}
+		ViewChart graphic = new ViewChart(with, without);
+		graphic.setVisible(true);
 		dispose();
 	}
-
 }
