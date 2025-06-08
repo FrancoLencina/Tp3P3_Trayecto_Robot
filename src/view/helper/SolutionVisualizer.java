@@ -24,6 +24,7 @@ public class SolutionVisualizer {
 	}
 
 	public void drawMatrix(JPanel panel, int[][] matrix) {
+		panel.removeAll();
 		panel.setLayout(new GridLayout(matrix.length, matrix[0].length, 3, 3));
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {

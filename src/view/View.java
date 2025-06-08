@@ -100,7 +100,6 @@ public class View extends JFrame {
 				loadMatrix(rController.getMatrix());
 				bfController = new BruteForceController(rController.getMatrix());
 				visualizer.setMatrixLabel(labels);
-				solutionsPanel.removeAll();
 				visualizer.drawMatrix(solutionsPanel, rController.getMatrix());
 				solutionsPanel.revalidate();
 				solutionsPanel.repaint();
