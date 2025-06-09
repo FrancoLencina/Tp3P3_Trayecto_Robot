@@ -31,23 +31,29 @@ public class ViewChart extends JFrame {
 	private void buildDataSet(Map<String, Double> resultsWith, Map<String, Double> resultsWithOut) {
 		data = new DefaultCategoryDataset();
 
-		Set<String> allKeys = new HashSet<>();
+		List<String> allKeys = new ArrayList<>();
 		for (String key : resultsWith.keySet()) {
 		    allKeys.add(key);
 		}
 	    
-	    List<String> orderedKeys = allKeys.stream()
-	            .sorted(Comparator.comparingInt(k -> {
-	                try {
-	                	String[] key = k.split("x");
-	                    return Integer.parseInt(key[0]);
-	                } catch (Exception e) {
-	                    return 0;
-	                }
-	            }))
-	            .collect(Collectors.toList());
+		allKeys.sort(Comparator.comparingInt(k -> { String[] key = k.split("x");
+													return Integer.parseInt(key[0]);
+		}));
 		
-	    for (String matrixSize : orderedKeys) {
+		
+		
+//	    List<String> orderedKeys = allKeys.stream()
+//	            .sorted(Comparator.comparingInt(k -> {
+//	                try {
+//	                	String[] key = k.split("x");
+//	                    return Integer.parseInt(key[0]);
+//	                } catch (Exception e) {
+//	                    return 0;
+//	                }
+//	            }))
+//	            .collect(Collectors.toList());
+		
+	    for (String matrixSize : allKeys) {
 	        Double timeWithout = resultsWithOut.get(matrixSize);
 	        Double timeWith = resultsWith.get(matrixSize);
 
