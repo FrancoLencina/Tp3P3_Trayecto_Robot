@@ -1,8 +1,6 @@
 package controllers;
 
-import model.randomMatrixGeneration.Generator;
-import model.randomMatrixGeneration.MatrixBuilder;
-import model.randomMatrixGeneration.RandomGenerator;
+import model.randomMatrixGeneration.*;
 
 public class RandomController {
 	private MatrixBuilder builder;

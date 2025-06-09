@@ -2,7 +2,7 @@ package main;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import view.*;;
+import view.*;
 
 public class Main {
 

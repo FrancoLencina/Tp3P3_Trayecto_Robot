@@ -12,7 +12,7 @@ import javax.swing.SwingWorker;
 
 import controllers.TimerController;
 
-public class GraphicBuilder extends SwingWorker<Object, Object>{
+public class GraphicBuilder extends SwingWorker<List<Double>, Void>{
 	
 	private TimerController timerC;
 	private int[][] matrix;
@@ -22,16 +22,9 @@ public class GraphicBuilder extends SwingWorker<Object, Object>{
 	}
 	
 	@Override
-	public Object doInBackground() {
+	public List<Double> doInBackground() {
 		timerC = new TimerController(matrix);
-		timerC.run();
-		try {
-			timerC.join(); // Espera a que termine el hilo
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error al esperar la ejecución del hilo.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+		timerC.runTimers();
 		List<Double> results = new ArrayList<Double>();
 		results.add(getResultsWithoutPruning());
 		results.add(getResultsWithPruning());

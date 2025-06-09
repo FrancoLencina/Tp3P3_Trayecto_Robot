@@ -1,9 +1,9 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
-
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -22,17 +22,29 @@ public class ViewChart extends JFrame {
 
 		data = new DefaultCategoryDataset();
 
-		for (Map.Entry<String, Double> entry : resultsWithOut.entrySet()) {
-			String matrixSize = entry.getKey();
-			Double time = entry.getValue();
-			data.addValue(time, "Tiempo sin poda", matrixSize);
-		}
+		Set<String> allKeys = new HashSet<>();
+	    allKeys.addAll(resultsWith.keySet());
+	    allKeys.addAll(resultsWithOut.keySet());
+	    
+	    List<String> orderedKeys = allKeys.stream()
+	            .sorted(Comparator.comparingInt(k -> {
+	                try {
+	                    return Integer.parseInt(k.toLowerCase().split("x")[0]);
+	                } catch (Exception e) {
+	                    return 0;
+	                }
+	            }))
+	            .collect(Collectors.toList());
+		
+	    for (String matrixSize : orderedKeys) {
+	        Double timeWithout = resultsWithOut.get(matrixSize);
+	        Double timeWith = resultsWith.get(matrixSize);
 
-		for (Map.Entry<String, Double> entry : resultsWith.entrySet()) {
-			String matrixSize = entry.getKey();
-			Double time = entry.getValue();
-			data.addValue(time, "Tiempo con poda", matrixSize);
-		}
+	        if (timeWithout != null)
+	            data.addValue(timeWithout, "Tiempo sin poda", matrixSize);
+	        if (timeWith != null)
+	            data.addValue(timeWith, "Tiempo con poda", matrixSize);
+	    }
 
 		graph = ChartFactory.createBarChart("Tiempos de resolución por tamaño de matriz", "Tamaño de la matriz",
 				"Tiempo (segundos)", data, PlotOrientation.VERTICAL, true, true, false);

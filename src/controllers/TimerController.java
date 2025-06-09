@@ -2,7 +2,7 @@ package controllers;
 
 import model.Timer;
 
-public class TimerController extends Thread {
+public class TimerController{
 
 	private int[][] matrix;
 	private Timer timer;
@@ -12,8 +12,7 @@ public class TimerController extends Thread {
 		timer = new Timer();
 	}
 
-	@Override
-	public void run() {
+	public void runTimers() {
 		timer.doBruteForceTime(matrix);
 		timer.doPruningTime(matrix);
 	}

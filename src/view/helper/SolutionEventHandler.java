@@ -23,7 +23,7 @@ public class SolutionEventHandler extends SwingWorker<Boolean, Boolean> {
 	protected Boolean doInBackground() {
 		running = true;
 		visualizer.setProgressBarIndeterminate();
-		timerController.run();
+		timerController.runTimers();
 		bfc.solve();
 		System.out.println(bfc.getAmountOfSolutions());
 		return true;

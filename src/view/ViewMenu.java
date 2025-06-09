@@ -1,28 +1,12 @@
 package view;
 
 import javax.swing.JFrame;
-
-import view.helper.ChartEventHandler;
-import view.helper.FileChooser;
-import view.helper.FileVerification;
-import view.helper.GraphicBuilder;
-import view.helper.PropMaker;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
+import view.helper.*;
 import java.awt.Font;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
-
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-
+import javax.swing.*;
 import controllers.ReaderController;
-import controllers.TimerController;
-import javax.swing.JProgressBar;
 
 public class ViewMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,10 +14,8 @@ public class ViewMenu extends JFrame {
 	private FileChooser chooser = new FileChooser();
 	private JButton btnRobotMode;
 	private JButton btnGraphicMode;
-	private TimerController timerC;
 	private JProgressBar progressBar;
 	private ReaderController rController = new ReaderController();
-	private GraphicBuilder gb;
 
 	public ViewMenu() {
 		setUpFrame();
@@ -74,7 +56,7 @@ public class ViewMenu extends JFrame {
 		btnGraphicMode.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnGraphicMode.setBounds(125, 175, 150, 25);
 		getContentPane().add(btnGraphicMode);
-		
+
 		progressBar = maker.createProgressBar(126, 216, 146, 14);
 		getContentPane().add(progressBar);
 	}
@@ -92,11 +74,11 @@ public class ViewMenu extends JFrame {
 						+ "Use la tecla Shift y el mouse para seleccionar varios archivos.",
 				"Selección de archivos", JOptionPane.INFORMATION_MESSAGE);
 		chooser.fileSelector(this);
-		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser,rController);
+		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser, rController);
 		if (matrixes == null)
 			return;
 
-		if (matrixes.size() > 5 ) {
+		if (matrixes.size() > 5) {
 			JOptionPane.showMessageDialog(this,
 					"Has seleccionado más de 5 archivos. Por favor, selecciona entre 1 y 5.", "Cantidad excedida",
 					JOptionPane.WARNING_MESSAGE);
@@ -107,16 +89,23 @@ public class ViewMenu extends JFrame {
 		btnGraphicMode.setEnabled(false);
 		ChartEventHandler ch = new ChartEventHandler(matrixes);
 		ch.execute();
-		try {
-			if (ch.get()) {
-				Map<String, Double> with = ch.getTimesWithPruning();
-				Map<String, Double> without = ch.getTimesWithoutPruning();
-				ViewChart graphic = new ViewChart(with, without);
-				graphic.setVisible(true);
-				dispose();
+		ch.addPropertyChangeListener(e -> {
+			if (ch.getState() == SwingWorker.StateValue.DONE) {
+				try {
+					if (ch.get()) {
+						Map<String, Double> with = ch.getTimesWithPruning();
+						Map<String, Double> without = ch.getTimesWithoutPruning();
+						ViewChart graphic = new ViewChart(with, without);
+						graphic.setVisible(true);
+						dispose();
+					}
+				} catch (InterruptedException | ExecutionException e1) {
+					e1.printStackTrace();
+				}
+				progressBar.setIndeterminate(false);
+				btnRobotMode.setEnabled(true);
+				btnGraphicMode.setEnabled(true);
 			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
+		});
 	}
 }
