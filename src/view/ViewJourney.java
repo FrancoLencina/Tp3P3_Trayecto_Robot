@@ -42,7 +42,7 @@ public class ViewJourney extends JFrame {
 	}
 
 	private void setUpFrame() {
-		setTitle("Titulo");
+		setTitle("Trayecto Robot");
 		setBounds(100, 100, 800, 480);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);

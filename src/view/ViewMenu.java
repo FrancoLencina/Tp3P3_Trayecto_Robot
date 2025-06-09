@@ -28,7 +28,7 @@ public class ViewMenu extends JFrame {
 	}
 
 	private void setUpFrame() {
-		setTitle("Titulo");
+		setTitle("Trayecto Robot");
 		setBounds(300, 200, 400, 280);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
@@ -70,7 +70,7 @@ public class ViewMenu extends JFrame {
 	private void verifyChooser() {
 		JOptionPane.showMessageDialog(this,
 				"Por favor, seleccione entre 1 y 5 archivos para la creación del gráfico.\n"
-						+ "Use la tecla Shift y el mouse para seleccionar varios archivos.",
+						+ "Use la tecla CTRL y el mouse para seleccionar varios archivos.",
 				"Selección de archivos", JOptionPane.INFORMATION_MESSAGE);
 		chooser.fileSelector(this);
 		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser, rController);

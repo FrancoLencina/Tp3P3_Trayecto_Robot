@@ -13,8 +13,8 @@ public class TimerController{
 	}
 
 	public void runTimers() {
-		timer.doBruteForceTime(matrix);
 		timer.doPruningTime(matrix);
+		timer.doBruteForceTime(matrix);
 	}
 
 	public double getBruteForceTime() {

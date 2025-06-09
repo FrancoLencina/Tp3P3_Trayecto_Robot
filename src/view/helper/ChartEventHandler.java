@@ -4,11 +4,13 @@ import java.util.*;
 
 import javax.swing.SwingWorker;
 
+import controllers.TimerController;
+
 public class ChartEventHandler extends SwingWorker<Boolean, Void> {
 
 	private List<int[][]> matrixes;
-	private Map<String, Double> with = new HashMap();
-	private Map<String, Double> without = new HashMap();;
+	private Map<String, Double> with = new HashMap<>();
+	private Map<String, Double> without = new HashMap<>();;
 
 	public ChartEventHandler(List<int[][]> matrixes) {
 		this.matrixes = matrixes;
@@ -16,27 +18,40 @@ public class ChartEventHandler extends SwingWorker<Boolean, Void> {
 
 	@Override
 	protected Boolean doInBackground() throws Exception {
-		List<GraphicBuilder> builders = new ArrayList<>();
-		for (int[][] matrix : matrixes) {
-			GraphicBuilder gb = new GraphicBuilder(matrix);
-			gb.execute();
-			System.out.println("ThreadIniciado");
-			builders.add(gb);
+
+		    List<Thread> threads = new ArrayList<>();
+		    List<TimerController> timers = new ArrayList<>();
+
+		    for (int[][] matrix : matrixes) {
+		        TimerController tc = new TimerController(matrix);
+		        timers.add(tc);
+
+		        Thread t = new Thread(() -> tc.runTimers());
+		        t.start();                
+		        threads.add(t);
+
+		        System.out.println("Thread iniciado");
+		    }
+
+		    for (Thread t : threads) {
+		        try {
+		            t.join();                    
+		        } catch (InterruptedException e) {
+		            Thread.currentThread().interrupt();
+		            return false;                
+		        }
+		    }
+
+		    for (int i = 0; i < timers.size(); i++) {
+		        TimerController tc = timers.get(i);
+		        int[][] matrix = matrixes.get(i);
+		        String size = matrix[0].length + "x" + matrix.length;
+
+		        without.put(size, tc.getBruteForceTime());
+		        with.put(size, tc.getPruningTime());
+		    }
+		    return true;
 		}
-		for (int i = 0; i < builders.size(); i++) {
-			try {
-				GraphicBuilder gb = builders.get(i);
-				List<Double> results = gb.get();
-				int[][] matrix = matrixes.get(i);
-				String size = matrix[0].length + "x" + matrix.length;
-				without.put(size, results.get(0));
-				with.put(size, results.get(1));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
 
 	public Map<String, Double> getTimesWithPruning() {
 		return this.with;
