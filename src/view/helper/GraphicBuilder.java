@@ -1,35 +1,30 @@
 package view.helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import controllers.TimerController;
 
-public class GraphicBuilder {
+public class GraphicBuilder extends SwingWorker<Object, Object>{
 	
 	private TimerController timerC;
+	private int[][] matrix;
 	
 	public GraphicBuilder(int[][] matrix) {
-		startProcess(matrix);
+		this.matrix=matrix;
 	}
-
-	public Map<String, Double> getResultsWithPruning(int[][] matrix) {
-		Map<String, Double> resultsWith = new HashMap<>();
-		double timeWith = timerC.getPruningTime();
-		String size = matrix[0].length + "x" + matrix.length;
-		resultsWith.put(size, timeWith);
-		System.out.println("Tamano" + size);
-		System.out.println("segudno con " + timeWith);
-		
-		return resultsWith ;
-	}
-
-	private void startProcess(int[][] matrix) {
+	
+	@Override
+	public Object doInBackground() {
 		timerC = new TimerController(matrix);
-		timerC.start();
+		timerC.run();
 		try {
 			timerC.join(); // Espera a que termine el hilo
 		} catch (InterruptedException e) {
@@ -37,17 +32,18 @@ public class GraphicBuilder {
 			JOptionPane.showMessageDialog(null, "Error al esperar la ejecución del hilo.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+		List<Double> results = new ArrayList<Double>();
+		results.add(getResultsWithoutPruning());
+		results.add(getResultsWithPruning());
+		return results;
 	}
 	
-	public Map<String, Double> getResultsWithoutPruning(int[][] matrix) {
-		Map<String, Double> resultsWithout = new HashMap<>();
-		double timeWithout = timerC.getBruteForceTime();
-		String size = matrix[0].length + "x" + matrix.length;
-		resultsWithout.put(size, timeWithout);
-		System.out.println("Tamano" + size);
-		System.out.println("segudno con " + timeWithout);
-		
-		return resultsWithout ;
+	public double getResultsWithPruning() {
+		return timerC.getPruningTime();
+	}
+	
+	public double getResultsWithoutPruning() {
+		return timerC.getBruteForceTime();
 	}
 
 }

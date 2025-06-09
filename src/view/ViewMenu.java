@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
+import view.helper.ChartEventHandler;
 import view.helper.FileChooser;
 import view.helper.FileVerification;
 import view.helper.GraphicBuilder;
@@ -13,12 +14,15 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import controllers.ReaderController;
 import controllers.TimerController;
+import javax.swing.JProgressBar;
 
 public class ViewMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -27,6 +31,7 @@ public class ViewMenu extends JFrame {
 	private JButton btnRobotMode;
 	private JButton btnGraphicMode;
 	private TimerController timerC;
+	private JProgressBar progressBar;
 	private ReaderController rController = new ReaderController();
 	private GraphicBuilder gb;
 
@@ -69,6 +74,9 @@ public class ViewMenu extends JFrame {
 		btnGraphicMode.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnGraphicMode.setBounds(125, 175, 150, 25);
 		getContentPane().add(btnGraphicMode);
+		
+		progressBar = maker.createProgressBar(126, 216, 146, 14);
+		getContentPane().add(progressBar);
 	}
 
 	private void openRobotMode() {
@@ -94,23 +102,21 @@ public class ViewMenu extends JFrame {
 					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-
-		Map<String, Double> with = new HashMap();
-		Map<String, Double> without = new HashMap();;
-		for(int[][] matrix : matrixes) {
-			gb = new GraphicBuilder(matrix);
-			Map<String,Double> resWith=gb.getResultsWithPruning(matrix);
-			Map<String,Double> resWithout=gb.getResultsWithoutPruning(matrix);
-			for(Map.Entry<String, Double> entry : resWith.entrySet()) {
-				with.put(entry.getKey(),entry.getValue());
+		progressBar.setIndeterminate(true);
+		btnRobotMode.setEnabled(false);
+		btnGraphicMode.setEnabled(false);
+		ChartEventHandler ch = new ChartEventHandler(matrixes);
+		ch.execute();
+		try {
+			if (ch.get()) {
+				Map<String, Double> with = ch.getTimesWithPruning();
+				Map<String, Double> without = ch.getTimesWithoutPruning();
+				ViewChart graphic = new ViewChart(with, without);
+				graphic.setVisible(true);
+				dispose();
 			}
-			for(Map.Entry<String, Double> entry : resWithout.entrySet()) {
-				without.put(entry.getKey(),entry.getValue());
-			}
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
 		}
-		
-		ViewChart graphic = new ViewChart(with, without);
-		graphic.setVisible(true);
-		dispose();
 	}
 }
