@@ -68,43 +68,63 @@ public class ViewMenu extends JFrame {
 	}
 
 	private void verifyChooser() {
+		showFileSelecionMessage();
+		chooser.fileSelector(this);
+		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser, rController);
+		if (matrixes == null || !isMatrixesCountValid(matrixes))
+			return;
+		prepareForLoading();
+		startChart(matrixes);
+	}
+	
+	private void showFileSelecionMessage() {
 		JOptionPane.showMessageDialog(this,
 				"Por favor, seleccione entre 1 y 5 archivos para la creación del gráfico.\n"
 						+ "Use la tecla CTRL y el mouse para seleccionar varios archivos.",
 				"Selección de archivos", JOptionPane.INFORMATION_MESSAGE);
-		chooser.fileSelector(this);
-		List<int[][]> matrixes = FileVerification.loadMatrixesFromFile(chooser, rController);
-		if (matrixes == null)
-			return;
-
+	}
+	
+	private boolean isMatrixesCountValid(List<int[][]> matrixes) {
 		if (matrixes.size() > 5) {
 			JOptionPane.showMessageDialog(this,
 					"Has seleccionado más de 5 archivos. Por favor, selecciona entre 1 y 5.", "Cantidad excedida",
 					JOptionPane.WARNING_MESSAGE);
-			return;
+			return false;
 		}
+		return true;
+	}
+	
+	private void prepareForLoading() {
 		progressBar.setIndeterminate(true);
 		btnRobotMode.setEnabled(false);
 		btnGraphicMode.setEnabled(false);
+	}
+
+	private void startChart(List<int[][]> matrixes) {
 		ChartEventHandler ch = new ChartEventHandler(matrixes);
 		ch.execute();
 		ch.addPropertyChangeListener(e -> {
 			if (ch.getState() == SwingWorker.StateValue.DONE) {
-				try {
-					if (ch.get()) {
-						Map<String, Double> with = ch.getTimesWithPruning();
-						Map<String, Double> without = ch.getTimesWithoutPruning();
-						ViewChart graphic = new ViewChart(with, without);
-						graphic.setVisible(true);
-						dispose();
-					}
-				} catch (InterruptedException | ExecutionException e1) {
-					e1.printStackTrace();
-				}
-				progressBar.setIndeterminate(false);
-				btnRobotMode.setEnabled(true);
-				btnGraphicMode.setEnabled(true);
+				isChartSetFinish(ch);
 			}
 		});
 	}
+
+	private void isChartSetFinish(ChartEventHandler ch) {
+		try {
+			if (ch.get()) {
+				Map<String, Double> with = ch.getTimesWithPruning();
+				Map<String, Double> without = ch.getTimesWithoutPruning();
+				ViewChart graphic = new ViewChart(with, without);
+				graphic.setVisible(true);
+				dispose();
+			}
+		} catch (InterruptedException | ExecutionException e1) {
+			e1.printStackTrace();
+		}
+		progressBar.setIndeterminate(false);
+		btnRobotMode.setEnabled(true);
+		btnGraphicMode.setEnabled(true);
+	}
+
 }

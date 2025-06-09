@@ -1,15 +1,8 @@
 package view.helper;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-
+import javax.swing.*;
 import model.Solution;
 
 public class SolutionVisualizer {
@@ -47,8 +40,6 @@ public class SolutionVisualizer {
 			if (row < matrixVisuals.length && col < matrixVisuals[0].length) {
 				matrixVisuals[row][col].setOpaque(true);
 				matrixVisuals[row][col].setBackground(Color.GREEN);
-			} else {
-				System.out.println("Índice fuera de rango: (" + row + "," + col + ")");
 			}
 		}
 	}

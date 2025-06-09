@@ -14,21 +14,36 @@ public class ViewChart extends JFrame {
 	private DefaultCategoryDataset data;
 
 	public ViewChart(Map<String, Double> resultsWith, Map<String, Double> resultsWithOut) {
+		setUpFrame();
+		buildDataSet(resultsWith, resultsWithOut);
+		buildChart();
+		ChartPanel chartPanel = new ChartPanel(graph);
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(chartPanel, BorderLayout.CENTER);
+	}
+
+	private void setUpFrame() {
 		setTitle("Gráfico de tiempos");
 		setBounds(100, 100, 800, 480);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
-
+	}
+	
+	private void buildDataSet(Map<String, Double> resultsWith, Map<String, Double> resultsWithOut) {
 		data = new DefaultCategoryDataset();
 
 		Set<String> allKeys = new HashSet<>();
-	    allKeys.addAll(resultsWith.keySet());
-	    allKeys.addAll(resultsWithOut.keySet());
+		for (String key : resultsWith.keySet()) {
+		    allKeys.add(key);
+		}
+		for (String key : resultsWithOut.keySet()) {
+		    allKeys.add(key);
+		}
 	    
 	    List<String> orderedKeys = allKeys.stream()
 	            .sorted(Comparator.comparingInt(k -> {
 	                try {
-	                    return Integer.parseInt(k.toLowerCase().split("x")[0]);
+	                	String[] key = k.split("x");
+	                    return Integer.parseInt(key[0]);
 	                } catch (Exception e) {
 	                    return 0;
 	                }
@@ -44,12 +59,15 @@ public class ViewChart extends JFrame {
 	        if (timeWith != null)
 	            data.addValue(timeWith, "Tiempo con poda", matrixSize);
 	    }
-
-		graph = ChartFactory.createBarChart("Tiempos de resolución por tamaño de matriz", "Tamaño de la matriz",
-				"Tiempo (segundos)", data, PlotOrientation.VERTICAL, true, true, false);
-
-		ChartPanel chartPanel = new ChartPanel(graph);
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(chartPanel, BorderLayout.CENTER);
 	}
+	
+	private void buildChart() {
+		graph = ChartFactory.createBarChart(
+				"Tiempos de resolución por tamaño de matriz", 
+				"Tamaño de la matriz",
+				"Tiempo (segundos)", 
+				data, PlotOrientation.VERTICAL, 
+				true, true, false);
+	}
+
 }

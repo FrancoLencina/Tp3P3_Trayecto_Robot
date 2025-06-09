@@ -1,10 +1,8 @@
 package view;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.*;
 import javax.swing.border.*;
 import controllers.*;
@@ -117,6 +115,7 @@ public class ViewJourney extends JFrame {
 
 		btnRandomMatrix.addActionListener(e -> {
 			if (!isSolutionHandlerRunning()) {
+				txtRoute.setText("");
 				int[][] rm = randController.getMatrix();
 				loadMatrix(rm);
 				bfController = new BruteForceController(rm);
@@ -188,11 +187,9 @@ public class ViewJourney extends JFrame {
 		String matrixAttributes = "Matriz " + matrix[0].length + "x" + matrix.length;
 		data.put(1, matrixAttributes);
 		String timeWithoutBacktrack = Double.toString(tController.getBruteForceTime());
-		System.out.println("without"+timeWithoutBacktrack);
 		data.put(2, timeWithoutBacktrack);
 		String timeWithBacktrack = Double.toString(tController.getPruningTime());
 		data.put(3, timeWithBacktrack);
-		System.out.println("with"+timeWithBacktrack);
 		String generatedBruteaths = Integer.toString(bfController.getBruteCant());
 		data.put(4, generatedBruteaths);
 		String generatedPrunningPaths = Integer.toString(bfController.getPrunningCant());

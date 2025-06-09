@@ -1,12 +1,8 @@
 package model.junitTest;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
-import model.randomMatrixGeneration.MatrixBuilder;
-import model.randomMatrixGeneration.PresetGenerator;
-import model.randomMatrixGeneration.RandomGenerator;
+import model.randomMatrixGeneration.*;
 
 public class MatrixBuilderTest {
 

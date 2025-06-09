@@ -1,9 +1,7 @@
 package view.helper;
 
 import java.util.*;
-
 import javax.swing.SwingWorker;
-
 import controllers.TimerController;
 
 public class ChartEventHandler extends SwingWorker<Boolean, Void> {
@@ -30,7 +28,6 @@ public class ChartEventHandler extends SwingWorker<Boolean, Void> {
 		        t.start();                
 		        threads.add(t);
 
-		        System.out.println("Thread iniciado");
 		    }
 
 		    for (Thread t : threads) {

@@ -1,10 +1,7 @@
 package view.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 import javax.swing.*;
-
 import controllers.ReaderController;
 
 public class FileVerification {
@@ -30,7 +27,7 @@ public class FileVerification {
 		}
 		return matrix;
 	}
-	
+
 	public static List<int[][]> loadMatrixesFromFile(FileChooser chooser, ReaderController rController) {
 		List<int[][]> ret = new ArrayList<int[][]>();
 		List<String> routes = chooser.getRoutes();
@@ -53,12 +50,11 @@ public class FileVerification {
 						JOptionPane.ERROR_MESSAGE);
 				continue;
 			}
-			
+
 			ret.add(matrix);
-			
-			
+
 		}
-		
+
 		return ret;
 	}
 }

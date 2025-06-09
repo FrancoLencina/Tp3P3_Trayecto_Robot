@@ -1,9 +1,7 @@
 package model.junitTest;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import model.Solution;
 
 public class SolutionTest {
