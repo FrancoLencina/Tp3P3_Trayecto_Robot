@@ -35,9 +35,6 @@ public class ViewChart extends JFrame {
 		for (String key : resultsWith.keySet()) {
 		    allKeys.add(key);
 		}
-		for (String key : resultsWithOut.keySet()) {
-		    allKeys.add(key);
-		}
 	    
 	    List<String> orderedKeys = allKeys.stream()
 	            .sorted(Comparator.comparingInt(k -> {
