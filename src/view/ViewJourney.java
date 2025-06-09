@@ -1,7 +1,10 @@
 package view;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import controllers.*;
@@ -26,7 +29,9 @@ public class ViewJourney extends JFrame {
 	private BruteForceController bfController;
 	private ReaderController rController = new ReaderController();
 	private RandomController randController = new RandomController();
+	private TimerController tController;
 	private SolutionEventHandler solutionHandler = null;
+	
 
 	public ViewJourney() {
 		setUpFrame();
@@ -93,7 +98,7 @@ public class ViewJourney extends JFrame {
 		btnLoad.addActionListener(e -> {
 			if (!isSolutionHandlerRunning()) {
 				chooser.fileSelector(txtRoute, this);
-				int [][]matrix= FileVerification.loadMatrixFromFile(chooser, rController);
+				int[][] matrix = FileVerification.loadMatrixFromFile(chooser, rController);
 				if (matrix == null)
 					return;
 				rController.readFile(chooser.getRoute());
@@ -147,15 +152,56 @@ public class ViewJourney extends JFrame {
 	}
 
 	public void generateSolutions() {
+		
+		tController = new TimerController(bfController.getMatrix());
 		if (!isSolutionHandlerRunning()) {
-			solutionHandler = new SolutionEventHandler(bfController, visualizer, comboBox);
+			visualizer.setProgressBarIndeterminate();
+			solutionHandler = new SolutionEventHandler(bfController, tController);
+			solutionHandler.addPropertyChangeListener(e -> {
+				try {
+					if (!solutionHandler.isCancelled() && solutionHandler.getState() == SwingWorker.StateValue.DONE) {
+						if (bfController.getAmountOfSolutions() != 0) {
+							String[] solutions = new String[bfController.getAmountOfSolutions()];
+							for (int i = 0; i < solutions.length; i++) {
+								solutions[i] = "Solución " + (i + 1);
+
+							}
+							comboBox.setModel(new DefaultComboBoxModel<>(solutions));
+							comboBox.setEnabled(true);
+							visualizer.showSolutionPath(bfController.getSolutions().get(0)); // Mostramos la primera solución.
+						}
+						setupDataTable();
+						visualizer.stopProgressBar();
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			});
 			solutionHandler.execute();
 		}
 		btnGenerate.setEnabled(false);
 	}
 
+	private void setupDataTable() {
+		Map<Integer, String> data = new HashMap<Integer, String>();
+		int[][] matrix = bfController.getMatrix();
+		String matrixAttributes = "Matriz " + matrix[0].length + "x" + matrix.length;
+		data.put(1, matrixAttributes);
+		String timeWithoutBacktrack = Double.toString(tController.getBruteForceTime());
+		System.out.println("without"+timeWithoutBacktrack);
+		data.put(2, timeWithoutBacktrack);
+		String timeWithBacktrack = Double.toString(tController.getPruningTime());
+		data.put(3, timeWithBacktrack);
+		System.out.println("with"+timeWithBacktrack);
+		String generatedBruteaths = Integer.toString(bfController.getBruteCant());
+		data.put(4, generatedBruteaths);
+		String generatedPrunningPaths = Integer.toString(bfController.getPrunningCant());
+		data.put(5, generatedPrunningPaths);
+		visualizer.displayDataTable(data);
+	}
+	
 	private boolean isSolutionHandlerRunning() {
-		if (solutionHandler != null && solutionHandler.isRunning()) {
+		if (solutionHandler != null && solutionHandler.getState() == SwingWorker.StateValue.PENDING) {
 			return true;
 		}
 		return false;

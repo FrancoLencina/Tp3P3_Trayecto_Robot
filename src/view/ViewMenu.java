@@ -24,7 +24,6 @@ public class ViewMenu extends JFrame {
 		openRobotMode();
 		btnGraphicMode.addActionListener(e -> {
 			verifyChooser();
-
 		});
 	}
 

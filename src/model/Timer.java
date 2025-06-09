@@ -14,6 +14,7 @@ public class Timer {
 		}
 		long finish = System.currentTimeMillis();
 		bruteForceTime = (finish - start) / 1000.0;
+		System.out.println("bruteforce time"+bruteForceTime );
 	}
 
 	public void doPruningTime(int[][] matrix) {
@@ -25,6 +26,7 @@ public class Timer {
 		}
 		long finish = System.currentTimeMillis();
 		pruningTime = (finish - start) / 1000.0;
+		System.out.println("pruning time"+pruningTime );
 	}
 
 	public double getBruteForceTime() {

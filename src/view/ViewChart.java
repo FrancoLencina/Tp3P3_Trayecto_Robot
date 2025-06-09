@@ -8,7 +8,6 @@ import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-
 public class ViewChart extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JFreeChart graph;
