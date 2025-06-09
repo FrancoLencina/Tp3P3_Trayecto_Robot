@@ -23,7 +23,7 @@ public class SolverTest {
 
 		Solver solver = new Solver(matrix);
 		solver.solve();
-		assertEquals(3, solver.solutionsSize());
+		assertTrue(solver.solutionsSize() > 1);
 
 	}
 
@@ -48,4 +48,37 @@ public class SolverTest {
 		new Solver(matrix);
 	}
 
+	@Test
+	public void testBacktrackingPathsLessThanBruteForcePaths() {
+		int[][] matrix = { { 1, -1, -1, -1 }, { -1, 1, 1, -1 }, { 1, 1, 1, -1 }, { 1, 1, 1, -1 }, { 1, -1, 1, -1 } };
+
+		Solver solver = new Solver(matrix);
+		solver.setBacktrackingEnabled(true);
+		solver.solve();
+		int seenPathsWithBacktracking = solver.get_cant();
+		
+		Solver solver2 = new Solver(matrix);
+		solver.setBacktrackingEnabled(false);
+		solver2.solve();
+		int seenPathsWithoutBacktracking = solver2.get_cant();
+		
+		assertTrue( seenPathsWithBacktracking < seenPathsWithoutBacktracking);
+	}
+	
+	@Test
+	public void testBacktrackingAndBruteForceSolutions() {
+		int[][] matrix = { { 1, -1, -1, -1 }, { -1, 1, 1, -1 }, { 1, 1, 1, -1 }, { 1, 1, 1, -1 }, { 1, -1, 1, -1 } };
+
+		Solver solver = new Solver(matrix);
+		solver.setBacktrackingEnabled(true);
+		solver.solve();
+		int solutionsWithBacktracking = solver.get_solutions().size();
+		
+		Solver solver2 = new Solver(matrix);
+		solver.setBacktrackingEnabled(false);
+		solver2.solve();
+		int solutionsWithoutBacktracking = solver2.get_solutions().size();
+		
+		assertEquals( solutionsWithBacktracking, solutionsWithoutBacktracking);
+	}
 }

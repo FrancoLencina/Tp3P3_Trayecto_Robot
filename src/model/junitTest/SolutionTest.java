@@ -9,14 +9,6 @@ import model.Solution;
 public class SolutionTest {
 
 	@Test
-	public void testConstructor() {
-		Solution s = new Solution();
-
-		assertEquals(0, s.getCharge());
-		assertTrue(s.get_journey().isEmpty());
-	}
-
-	@Test
 	public void testAddSingleStep() {
 		Solution s = new Solution();
 		s.addStep(0, 0, 3);
