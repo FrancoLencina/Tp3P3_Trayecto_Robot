@@ -2,7 +2,6 @@ package view;
 
 import java.awt.BorderLayout;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
