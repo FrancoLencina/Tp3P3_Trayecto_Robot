@@ -24,7 +24,14 @@ public class ChartEventHandler extends SwingWorker<Boolean, Void> {
 		        TimerController tc = new TimerController(matrix);
 		        timers.add(tc);
 
-		        Thread t = new Thread(new MyRunnable(tc));
+		        Thread t = new Thread(new Runnable() {
+		        	
+					@Override
+					public void run() {
+						tc.runTimers();
+						
+					}});
+		        
 		        t.start();                
 		        threads.add(t);
 

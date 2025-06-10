@@ -40,19 +40,6 @@ public class ViewChart extends JFrame {
 													return Integer.parseInt(key[0]);
 		}));
 		
-		
-		
-//	    List<String> orderedKeys = allKeys.stream()
-//	            .sorted(Comparator.comparingInt(k -> {
-//	                try {
-//	                	String[] key = k.split("x");
-//	                    return Integer.parseInt(key[0]);
-//	                } catch (Exception e) {
-//	                    return 0;
-//	                }
-//	            }))
-//	            .collect(Collectors.toList());
-		
 	    for (String matrixSize : allKeys) {
 	        Double timeWithout = resultsWithOut.get(matrixSize);
 	        Double timeWith = resultsWith.get(matrixSize);
