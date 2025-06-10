@@ -47,7 +47,7 @@ public class ViewMenu extends JFrame {
 	}
 
 	private void addButtons() {
-		btnRobotMode = maker.createButton(125, 130, 150, 25, "Modo Robot");
+		btnRobotMode = maker.createButton(125, 130, 150, 25, "Modo Trayecto");
 		btnRobotMode.setFont(new Font("Tahoma", Font.BOLD, 12));
 		getContentPane().add(btnRobotMode);
 
